@@ -20,19 +20,14 @@ public class AdminMenu {
 	// 파라미터들 정리해놓음
 	private Admin admin;
 	private BufferedReader br;
-	private User user;
-	private Coupon coupon;
 	private QnAService qnaService;
 
-	public AdminMenu(BufferedReader br, Admin admin,User user,Coupon coupon){
+	public AdminMenu(BufferedReader br, Admin admin){
 		this.br = br;
 		this.admin = admin;
-		this.user = user;
-		this.coupon = coupon;
 
 		QnADAO qnaDAO = new QnADAOImpl(admin);
 		this.qnaService = new QnAServiceImpl(qnaDAO, br);
-
 		menu();
 	}
 

@@ -11,19 +11,26 @@ import com.booking.accommodation.Accommodation;
 import com.booking.dto.Review;
 
 public class AccommodationMenu { 
+	
 	private BufferedReader br;
-	static AccommodationviewDAO accommodationviewDAO;  // 숙소 DAO
-	static Accommodation accommodation;   // 숙소클래스(생성자, getter, setter)
+	private AccommodationviewDAO accommodationviewDAO;  // 숙소 DAO
+	private Accommodation accommodation;   // 숙소클래스(생성자, getter, setter)
 	// 리뷰 클래스
-	static Review review; 
+	private Review review; 
 	// 리뷰 DAO
-	static ReviewDAOImpl reviewDAO; 
+	private ReviewDAOImpl reviewDAO; 
+	
+	public AccommodationMenu(BufferedReader br){
+		
+		this.br = br;
+		AccMenu();
+	}
 	
 	// 숙소메뉴 호출 함수
-	public void AccMenu(BufferedReader br, Accommodation accommodation, AccommodationviewDAO accommodationviewDAO) throws IOException {
+	public void AccMenu(){
 		//숙소 메뉴
-		AccommodationMenu.accommodation = accommodation;
-		AccommodationMenu.accommodationviewDAO = accommodationviewDAO;
+//		AccommodationMenu.accommodation = accommodation;
+//		AccommodationMenu.accommodationviewDAO = accommodationviewDAO;
 
 		//1. 숙소보기
 		try {
@@ -41,8 +48,7 @@ public class AccommodationMenu {
 					accommodationviewDAO.selectInfo();
 					
 					// 생성하고 다음 메뉴 부르기(reviewMenu)
-					ReviewMenu reviewMenu = new ReviewMenu();
-					reviewMenu.R_menu(br,review, reviewDAO, accommodation,accommodationviewDAO);
+					new ReviewMenu(br);
 				
 
 				}else if(no==2){
@@ -108,6 +114,9 @@ public class AccommodationMenu {
 			} 
 		}catch(NumberFormatException e){
 			System.out.println("[숫자만 입력 가능]");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}finally {
 
 		}

@@ -13,6 +13,7 @@ public class DBUtil {
 	private static final String DB_URL = "jdbc:oracle:thin:@211.238.142.200:1521:xe";
 	private static final String DB_ID = "jteam01";
 	private static final String DB_PASSWORD = "1234";
+	public static final String emailFormat = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
 	
 	public static Connection getConnection() throws ClassNotFoundException, SQLException {
 		Class.forName(DB_DRIVER);
