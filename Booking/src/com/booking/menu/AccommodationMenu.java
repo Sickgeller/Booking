@@ -6,9 +6,9 @@ import java.io.IOException;
 
 import com.booking.DAO.AccommodationDAO;
 import com.booking.DAO.AccommodationviewDAO;
-import com.booking.DAO.ReviewDAO;
+import com.booking.DAO.impl.ReviewDAOImpl;
 import com.booking.accommodation.Accommodation;
-import com.booking.member.Review;
+import com.booking.dto.Review;
 
 public class AccommodationMenu { 
 	private BufferedReader br;
@@ -17,7 +17,7 @@ public class AccommodationMenu {
 	// 리뷰 클래스
 	static Review review; 
 	// 리뷰 DAO
-	static ReviewDAO reviewDAO; 
+	static ReviewDAOImpl reviewDAO; 
 	
 	// 숙소메뉴 호출 함수
 	public void AccMenu(BufferedReader br, Accommodation accommodation, AccommodationviewDAO accommodationviewDAO) throws IOException {
@@ -42,7 +42,7 @@ public class AccommodationMenu {
 					
 					// 생성하고 다음 메뉴 부르기(reviewMenu)
 					ReviewMenu reviewMenu = new ReviewMenu();
-					reviewMenu.R_menu(br,review, reviewDAO, accommodation,accommodationviewDAO );
+					reviewMenu.R_menu(br,review, reviewDAO, accommodation,accommodationviewDAO);
 				
 
 				}else if(no==2){

@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import com.booking.member.Admin;
+import com.booking.dto.Admin;
 import com.dbutil.DBUtil;
 
 //import oracle.sql.NUMBER;

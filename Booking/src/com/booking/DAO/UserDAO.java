@@ -10,8 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 
-import com.booking.member.Grade;
-import com.booking.member.User;
+import com.booking.dto.Grade;
+import com.booking.dto.User;
 import com.booking.menu.UserMenu;
 import com.dbutil.DBUtil;
 

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import com.booking.member.Admin;
+import com.booking.dto.Admin;
 import com.dbutil.DBUtil;
 
 public class AdminDAO {

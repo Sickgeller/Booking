@@ -1,4 +1,4 @@
-package com.booking.member;
+package com.booking.dto;
 
 import java.util.Date;
 

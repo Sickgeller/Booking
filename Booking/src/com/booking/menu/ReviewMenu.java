@@ -4,23 +4,23 @@ import java.io.BufferedReader;
 
 
 import com.booking.DAO.AccommodationviewDAO;
-import com.booking.DAO.ReviewDAO;
+import com.booking.DAO.impl.ReviewDAOImpl;
 import com.booking.accommodation.Accommodation;
-import com.booking.member.Review;
+import com.booking.dto.Review;
 
 public class ReviewMenu {
 	static Review review;
-	static ReviewDAO reviewDAO;
+	static ReviewDAOImpl reviewDAO;
 	static Accommodation accommodation;
 	//숙소 뷰
 	static AccommodationviewDAO adao;
 	
 	//
-	public void R_menu(BufferedReader br, Review review, ReviewDAO reviewDAO, Accommodation accommodation, AccommodationviewDAO adao ) {
+	public void R_menu(BufferedReader br, Review review, ReviewDAOImpl reviewDAO, Accommodation accommodation, AccommodationviewDAO adao ) {
 		// 선택된 숙소의 리뷰 보기
 		// 초기화를 안했
 		ReviewMenu.review = review;
-		ReviewMenu.reviewDAO = new ReviewDAO();
+		ReviewMenu.reviewDAO = new ReviewDAOImpl();
 
 		
 		try {

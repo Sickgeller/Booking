@@ -1,4 +1,4 @@
-package com.booking.member;
+package com.booking.dto;
 
 public enum Grade {
 	NORMAL,

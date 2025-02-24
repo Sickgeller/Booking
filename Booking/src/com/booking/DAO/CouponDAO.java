@@ -12,9 +12,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.booking.member.Admin;
-import com.booking.member.Coupon;
-import com.booking.member.User;
+import com.booking.dto.Admin;
+import com.booking.dto.Coupon;
+import com.booking.dto.User;
 import com.dbutil.DBUtil;
 
 
@@ -186,6 +186,8 @@ public class CouponDAO {
 			DBUtil.executeClose(rs, select_pstmt,conn);
 		}
 	}
+	
+	
 	public void showUserCoupon(String ID) {
 		
 		Connection conn = null;

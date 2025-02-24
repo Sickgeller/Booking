@@ -8,12 +8,12 @@ import com.booking.DAO.AccommodationviewDAO;
 import com.booking.DAO.AdminDAO;
 import com.booking.DAO.CashDAO;
 import com.booking.DAO.CouponDAO;
-import com.booking.DAO.ReviewDAO;
 import com.booking.DAO.UserDAO;
+import com.booking.DAO.impl.ReviewDAOImpl;
 import com.booking.accommodation.Accommodation;
-import com.booking.member.Admin;
-import com.booking.member.Coupon;
-import com.booking.member.User;
+import com.booking.dto.Admin;
+import com.booking.dto.Coupon;
+import com.booking.dto.User;
 import com.booking.menu.AccommodationMenu;
 import com.booking.menu.AdminMenu;
 import com.booking.menu.UserMenu;
@@ -25,8 +25,8 @@ public class Main {
 	static Admin admin;
 	static UserDAO userDAO;
 	static User user;
-	static com.booking.member.Review review;
-	static ReviewDAO reviewDAO;
+	static com.booking.dto.Review review;
+	static ReviewDAOImpl reviewDAO;
 	static Accommodation accommodation; 
 	static AccommodationviewDAO accommodationviewDAO;
 	static AccommodationMenu accommodationMenu;
@@ -43,7 +43,7 @@ public class Main {
 		cashDAO = new CashDAO();
 
 		couponDAO = new CouponDAO();
-		reviewDAO = new ReviewDAO();
+		reviewDAO = new ReviewDAOImpl();
 
 		callMenu();
 	}
@@ -95,17 +95,12 @@ public class Main {
 						System.out.println("로그인이 완료되었습니다.");
 
 
-						System.out.println("숙소 메뉴 입니다.");
-						AccommodationMenu accommodationMenu = new AccommodationMenu();
-						accommodationMenu.AccMenu(br,accommodation, accommodationviewDAO);
-						
-						//UserMenu userMenu = new UserMenu();
-						//userMenu.U_Menu(br, user, userDAO);
+//						System.out.println("숙소 메뉴 입니다.");
+//						AccommodationMenu accommodationMenu = new AccommodationMenu();
+//						accommodationMenu.AccMenu(br,accommodation, accommodationviewDAO);
+//						
 
-						//UserMenu userMenu = new UserMenu();
-						//userMenu.U_Menu(br, user, review,userDAO, cashDAO,reviewDAO);
-
-						UserMenu userMenu = new UserMenu();
+//						UserMenu userMenu = new UserMenu();
 						System.out.println("우와! 환영합니다! 😊 우와놀자에서 최고의 여행을 경험하세요!");
 
 
@@ -126,7 +121,7 @@ public class Main {
 								
 							}else if(num == 2) {
 								System.out.println("\n마이페이지");
-								userMenu.U_Menu(br,user,review, userDAO, cashDAO, reviewDAO,couponDAO);
+								new UserMenu(br,user);
 							}
 							else if(num == 3) { 
 								System.out.println("문의하기");
