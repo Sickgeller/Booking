@@ -13,6 +13,7 @@ import com.booking.service.AdminService;
 import com.booking.service.UserService;
 import com.booking.service.impl.AdminServiceImpl;
 import com.booking.service.impl.UserServiceImpl;
+import com.util.Util;
 
 
 public class Main {
@@ -40,11 +41,12 @@ public class Main {
 					System.out.println("2. 회원가입");
 					System.out.println("0. 프로그램 종료");
 					menuNum = Integer.parseInt(br.readLine());
-					if(menuNum != 1 && menuNum != 2 && menuNum != 0) {
+					if(Util.checkValidNum(menuNum, 1,2,0)) {
+						break;
+					}else {
 						System.out.println("1,2,0 번 메뉴중 하나를 입력해주세요");
 						continue;
-					}else break;
-
+					}
 				}catch (Exception e) {
 					System.out.println("❌ 잘못된 입력입니다 ❌");
 					continue;
@@ -63,6 +65,7 @@ public class Main {
 						new AdminMenu(br, admin); // 어드민메뉴로 분리
 					}
 					else if((user = userService.login(ID, passwd)) != null) {
+						System.out.println("로그인이 완료되었습니다.");
 						new UserMenu(br,user);
 					}
 				} catch (Exception e) {

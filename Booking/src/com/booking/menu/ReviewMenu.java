@@ -43,11 +43,11 @@ public class ReviewMenu {
 					reviewService.selectdetailReview(num);
 				}else if(no == 2) {
 					// 예약하기 화면으로
-					accommodationviewDAO.selectInfo();
+//					accommodationviewDAO.selectInfo();
 					System.out.print("선택한 숙소 번호 >");
 					int num = Integer.parseInt(br.readLine());
 					System.out.println("============================");
-					accommodationviewDAO.selectDetailInfo(num);
+//					accommodationviewDAO.selectDetailInfo(num);
 				}
 
 			}

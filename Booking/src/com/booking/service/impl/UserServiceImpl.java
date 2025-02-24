@@ -8,6 +8,7 @@ import com.booking.DAO.impl.UserDAOImpl;
 import com.booking.dto.User;
 import com.booking.service.UserService;
 import com.dbutil.DBUtil;
+import com.util.Util;
 
 public class UserServiceImpl implements UserService{
 	private UserDAO userDAO;
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService{
 			while(true) { // 이메일 유효성검사 루프문
 				System.out.println("이메일을 입력해주세요");
 				email = br.readLine();
-				if(!email.matches(DBUtil.emailFormat)) {
+				if(!email.matches(Util.emailFormat)) {
 					System.out.println("잘못된 이메일 형식입니다.");
 					continue;
 				}else {
@@ -98,7 +99,7 @@ public class UserServiceImpl implements UserService{
 			try {
 				System.out.println("이메일을 변경하세요 : ");
 				email = br.readLine();
-				if(email.matches(DBUtil.emailFormat)) {
+				if(email.matches(Util.emailFormat)) {
 					break;
 				}else {
 					System.out.println("이메일의 형식이 아닙니다.");

@@ -1,7 +1,6 @@
 package com.booking.DAO;
 
 import java.util.List;
-
 import com.booking.dto.QNA;
 
 public interface QnADAO {
