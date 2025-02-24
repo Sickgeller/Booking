@@ -16,7 +16,7 @@ import com.booking.service.impl.UserServiceImpl;
 import com.util.Util;
 
 
-public class Main {
+public class MainMenu {
 
 	private BufferedReader br = new BufferedReader(new InputStreamReader(System.in));;
 	private Admin admin;
@@ -24,7 +24,7 @@ public class Main {
 	private UserService userService = new UserServiceImpl(br);;
 	private AdminService adminService = new AdminServiceImpl();
 	
-	public Main(){
+	public MainMenu(){
 		callMenu();
 	}
 

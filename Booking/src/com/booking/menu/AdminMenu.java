@@ -21,7 +21,7 @@ public class AdminMenu {
 	// 파라미터들 정리해놓음
 	private Admin admin;
 	private BufferedReader br;
-	
+
 
 	public AdminMenu(BufferedReader br, Admin admin){
 		this.br = br;
@@ -30,46 +30,47 @@ public class AdminMenu {
 	}
 
 
-	public void menu() {
-		int answer = Integer.MIN_VALUE;
+	public void menu() {	
 		while(true) {
-			try {
-				System.out.println("관리자 메뉴입니다.");
-				System.out.println("원하시는 항목을 골라주세요");
-				System.out.println("1.숙소 관리");
-				System.out.println("2.문의 관리 페이지");
-				System.out.println("3.쿠폰 관리 페이지");
-				System.out.println("0.로그아웃");
-				answer = Integer.parseInt(br.readLine());
+			int answer = Integer.MIN_VALUE;
+			while(true) {
+				try {
+					System.out.println("관리자 메뉴입니다.");
+					System.out.println("원하시는 항목을 골라주세요");
+					System.out.println("1.숙소 관리");
+					System.out.println("2.문의 관리 페이지");
+					System.out.println("3.쿠폰 관리 페이지");
+					System.out.println("0.로그아웃");
+					answer = Integer.parseInt(br.readLine());
 
-				if(Util.checkValidNum(answer, 1,2,3,0)) {
-					break;
-				}else {
-					System.out.println("유효하지않은 입력입니다. 1,2,3,0중 하나를 입력해주세요");
+					if(Util.checkValidNum(answer, 1,2,3,0)) {
+						break;
+					}else {
+						System.out.println("유효하지않은 입력입니다. 1,2,3,0중 하나를 입력해주세요");
+					}
+				}catch (NumberFormatException e) {
+					System.out.println("숫자만 입력해주세요");
+					continue;
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			}catch (NumberFormatException e) {
-				System.out.println("숫자만 입력해주세요");
-				continue;
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
-		}
 
-		if(answer == 1) {
-			new AdminAccomoMenu(br, admin); // 어드민 숙소관리 메뉴
-		}else if(answer == 2) {
-			new AdminQNAMenu(br,admin);
-		}else if(answer == 3) {
-			couponManagement();
-		}else if(answer == 0){
-			return;
+			if(answer == 1) {
+				new AdminAccomoMenu(br, admin); // 어드민 숙소관리 메뉴
+			}else if(answer == 2) {
+				new AdminQNAMenu(br,admin);
+			}else if(answer == 3) {
+				couponManagement();
+			}else if(answer == 0){
+				break;
+			}
 		}
 	}
 
-
 	private void couponManagement() { // 쿠폰 관리 메뉴
 		// 쿠폰 종류 조회
-		
+
 
 	}
 }
