@@ -6,14 +6,14 @@ import java.util.Date;
 public class Coupon {
 	
 	int coupon_ID;
-	int admin_ID;
+	String admin_ID;
 	String coupon_code;
 	Date coupon_issuance_date;
 	Date coupon_expired_date;
 	int coupon_discount;
 	
 	
-	public Coupon(int coupon_ID, int admin_ID, String coupon_code, Date coupon_issuance_date, Date coupon_expired_date,
+	public Coupon(int coupon_ID, String admin_ID, String coupon_code, Date coupon_issuance_date, Date coupon_expired_date,
 			int coupon_discount) {
 		super();
 		this.coupon_ID = coupon_ID;
@@ -26,16 +26,17 @@ public class Coupon {
 	public Coupon() {
 		// TODO Auto-generated constructor stub
 	}
+	
 	public int getCoupon_ID() {
 		return coupon_ID;
 	}
 	public void setCoupon_ID(int coupon_ID) {
 		this.coupon_ID = coupon_ID;
 	}
-	public int getAdmin_ID() {
+	public String getAdmin_ID() {
 		return admin_ID;
 	}
-	public void setAdmin_ID(int admin_ID) {
+	public void setAdmin_ID(String admin_ID) {
 		this.admin_ID = admin_ID;
 	}
 	public String getCoupon_code() {

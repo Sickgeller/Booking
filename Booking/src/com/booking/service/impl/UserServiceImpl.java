@@ -173,23 +173,29 @@ public class UserServiceImpl implements UserService{
 	public void chargeAccount(String ID, int money) {
 		int chargeCash = Integer.MIN_VALUE;
 		while(true) {
+
+			System.out.println("금액 충전");
+			System.out.println("충전할 금액을 입력하세요.");
+
 			try {
-				System.out.println("금액 충전");
-				System.out.println("충전할 금액을 입력하세요.");
 				chargeCash = Integer.parseInt(br.readLine());
-				if(chargeCash > 0)  break;
-			}catch(NumberFormatException | IOException e) {
-				e.printStackTrace();
-				System.out.println("숫자만 입력하세요 ");
+			} catch (NumberFormatException | IOException e) {
+				System.out.println("숫자만 입력해주세요");
 				continue;
 			}
-
-			boolean result = userDAO.chargeAccount(ID, money);
-			if(result) {
-				System.out.println("충전 성공 !");
+			if(chargeCash < 0)  {
+				System.out.println("음수는 입력할수없습니다.");
+				continue;
 			}else {
-				System.out.println("충전 실패 ! ! ! ");
+				break;
 			}
 		}
+		boolean result = userDAO.chargeAccount(ID, money + chargeCash);
+		if(result) {
+			System.out.println("충전 성공 !");
+		}else {
+			System.out.println("충전 실패 ! ! ! ");
+		}
+
 	}
 }

@@ -9,7 +9,7 @@ public class User {
 	String passwd;
 	String name;
 	Enum Grade;
-	
+
 	int point;
 	int cash;
 	Date reg_date;
@@ -24,9 +24,9 @@ public class User {
 		this.cash = cash;
 		this.reg_date = reg_date;
 	}
-	
 
-	
+
+
 	public int getPoint() {
 		return point;
 	}
@@ -57,7 +57,7 @@ public class User {
 	}
 
 
-	
+
 
 
 	public Enum getGrade() {
@@ -100,5 +100,5 @@ public class User {
 
 	public void setName(String name) {
 		this.name = name;
-}
+	}
 }

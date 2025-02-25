@@ -10,7 +10,7 @@ import java.sql.SQLException;
 public class DBUtil {
 
 	private static final String DB_DRIVER = "oracle.jdbc.OracleDriver";
-	private static final String DB_URL = "jdbc:oracle:thin:@211.238.142.200:1521:xe";
+	private static final String DB_URL = "jdbc:oracle:thin:@211.238.142.200:1521/xe";
 	private static final String DB_ID = "jteam01";
 	private static final String DB_PASSWORD = "1234";
 	

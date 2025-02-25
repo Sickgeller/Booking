@@ -127,39 +127,36 @@ public class UserDAOImpl implements UserDAO{
 	private boolean executeUpdate(String sql, String... params) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		int result = Integer.MIN_VALUE;
 		try {
 			conn = DBUtil.getConnection();
 			pstmt = conn.prepareStatement(sql);
 			for (int i = 0; i < params.length; i++) {
 				pstmt.setString(i + 1, params[i]);
 			}
-			int result = pstmt.executeUpdate();
-			
-			if(result == 1) {
-				if(conn != null) conn.commit();
-				return true;
-			}else {
-				if(conn != null) conn.rollback();
-				return false;
-			}
+			result = pstmt.executeUpdate();
+			Util.doCommitOrRollback(conn, result);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			DBUtil.executeClose(null, pstmt, conn);
 		}
-		return false;
+		return result == 1;
 	}
 
 	@Override
 	public boolean chargeAccount(String ID, int money) {
 		Connection conn = null;
-		String sql = "update \"user\" set CASH = ?";
+		String sql = null;
 		PreparedStatement pstmt = null;
+		int result = Integer.MIN_VALUE;
 		try {
 			conn = DBUtil.getConnection();
+			sql = "UPDATE \"USER\" SET CASH = ? WHERE USER_ID = ?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, money);
-			int result = pstmt.executeUpdate();
+			pstmt.setString(2,ID);
+			result = pstmt.executeUpdate();
 			Util.doCommitOrRollback(conn, result);
 		} catch (Exception e) {
 			if(conn != null)try {conn.rollback();}catch(Exception e1) {}
@@ -167,6 +164,6 @@ public class UserDAOImpl implements UserDAO{
 		} finally {
 			DBUtil.executeClose(null, pstmt, conn);
 		}
-		return false;
+		return result == 1;
 	}
 }

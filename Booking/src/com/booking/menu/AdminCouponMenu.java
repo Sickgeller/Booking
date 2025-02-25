@@ -2,18 +2,21 @@ package com.booking.menu;
 
 import java.io.BufferedReader;
 
-import com.booking.DAO.CouponDAO;
 import com.booking.dto.Admin;
+import com.booking.service.CouponService;
+import com.booking.service.impl.CouponServiceImpl;
 import com.util.Util;
 
 public class AdminCouponMenu {
 
 	private BufferedReader br;
 	private Admin admin;
+	private CouponService couponService;
 
 	AdminCouponMenu(BufferedReader br , Admin admin){
 		this.br = br;
 		this.admin = admin;
+		couponService = new CouponServiceImpl(br,admin);
 		menu();
 	}
 
@@ -41,22 +44,20 @@ public class AdminCouponMenu {
 			}
 
 		}
-		CouponDAO coupondao = new CouponDAO();
 		if(num == 1) {
 			System.out.println("쿠폰 종류 조회");
-			coupondao.showAllCoupon(admin.getID());
+			couponService.showAllCoupon();
 		}else if(num == 2) 
 		{
 			System.out.println("쿠폰 등록");
-			coupondao.reg_coupon(br);
+			couponService.reg_coupon(br);
 		}
 		else if(num == 3) {
 			System.out.println("신규 사용자에게 기본 쿠폰 발급");
-			coupondao.giveNewUserCoupon(coupondao.getDefaultCouponID());
 		}
 		else if(num == 4) {
 			System.out.println("사용자에게 쿠폰 발급");
-			//coupondao.giveCouponUser(admin);
+			couponService.giveCouponUser();
 		}else if(num == 0) {
 			return;
 		}
