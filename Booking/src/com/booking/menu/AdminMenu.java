@@ -57,7 +57,7 @@ public class AdminMenu {
 			}
 
 			if(answer == 1) {
-				new AdminAccomoMenu(br, admin); // 어드민 숙소관리 메뉴
+				new AdminAccommoMenu(br, admin); // 어드민 숙소관리 메뉴
 			}else if(answer == 2) {
 				new AdminQNAMenu(br,admin);
 			}else if(answer == 3) {

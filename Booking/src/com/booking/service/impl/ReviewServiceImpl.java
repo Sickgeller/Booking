@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.booking.DAO.ReviewDAO;
+import com.booking.DAO.impl.ReviewDAOImpl;
 import com.booking.dto.QNA;
 import com.booking.dto.Review;
 import com.booking.dto.User;
@@ -12,11 +13,10 @@ import com.booking.service.ReviewService;
 
 public class ReviewServiceImpl implements ReviewService{
 
-	ReviewDAO reviewDAO;
+	ReviewDAO reviewDAO = new ReviewDAOImpl();
 	BufferedReader br;
 
-	public ReviewServiceImpl(ReviewDAO reviewDAO, BufferedReader br) {
-		this.reviewDAO = reviewDAO;
+	public ReviewServiceImpl(BufferedReader br) {
 		this.br = br;
 	}
 

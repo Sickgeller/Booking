@@ -26,20 +26,13 @@ public class UserMenu {
 	private User user;
 	private ReviewMenu reviewMenu;
 	private UserService userService;
-
-	static Review review;
-	static UserDAO userDAO;
-	static CashDAO cashDAO;
-	static ReviewDAOImpl reviewDAO;
-	static CouponDAO couponDAO;
 	private ReviewService reviewService;
 
 	public UserMenu(BufferedReader br,User user){
 		this.br = br;
 		this.user = user;
 		reviewMenu = new ReviewMenu(br);
-		ReviewDAO reviewDAO = new ReviewDAOImpl();
-		reviewService = new ReviewServiceImpl(reviewDAO, br);
+		reviewService = new ReviewServiceImpl(br);
 		userService= new UserServiceImpl(br);
 		userMenu();
 	}
@@ -54,13 +47,12 @@ public class UserMenu {
 			System.out.println("3. 문의하기");
 			System.out.println("4. 뒤로 가기");
 			System.out.println("0. 로그아웃");
-			List<Integer> answer = new ArrayList<>();
-			answer.addAll(Arrays.asList(1, 2, 3, 4, 0));
 			int num = Integer.MIN_VALUE;
+
 			while(true) {
 				try {
 					num = Integer.parseInt(br.readLine());
-					if(answer.contains(num)) {
+					if(Util.checkValidNum(num, 1,2,3,4,0)) {
 						break;
 					}else {
 						System.out.println("1,2,3,4,0 중 하나를 선택해주세요");
@@ -129,9 +121,7 @@ public class UserMenu {
 				System.out.println("회원 정보 변경");
 				System.out.println("변경하고 싶은 정보를 선택하세요.(숫자)");
 				System.out.println("1.이름 2.이메일 3.비밀번호 0.뒤로가기");
-
 				try {
-
 					num1 = Integer.parseInt(br.readLine());
 					if(Util.checkValidNum(num1, 1,2,3,0)) {
 						break;
@@ -150,26 +140,13 @@ public class UserMenu {
 			}else if(num1 == 3) { // 비밀번호 변경 메서드
 				userService.changeUserPW(ID);
 			}else if(num1 == 0) {
-				return;
 			}
 		}else if(no == 3) {// 등급확인 메서드
 			userService.checkUserGrade(ID); 
-
+			
 		}else if(no == 4) { // 금액충전메서드
-			try {
-				System.out.println("금액 충전");
-				int cash = user.getCash();
-				System.out.println("충전할 금액을 입력하세요.");
-				cash = Integer.parseInt(br.readLine());
-				cashDAO.chargeCash(ID, cash, br);
-			}catch(NumberFormatException e) {
-				e.printStackTrace();
-				System.out.println("숫자만 입력하세요 ");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
+			userService.chargeAccount(ID, user.getCash());
+			
 		}else if(no == 5) {
 			while(true) {
 				try {

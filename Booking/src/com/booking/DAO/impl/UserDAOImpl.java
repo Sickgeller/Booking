@@ -8,6 +8,7 @@ import java.util.Date;
 import com.booking.DAO.UserDAO;
 import com.booking.dto.User;
 import com.dbutil.DBUtil;
+import com.util.Util;
 
 public class UserDAOImpl implements UserDAO{
 
@@ -61,9 +62,6 @@ public class UserDAOImpl implements UserDAO{
 
 	@Override
 	public boolean register(String ID, String passwd, String name, String email) {
-		if(!checkIDDuplicate(ID)) {
-			return false;
-		}
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		try {
@@ -74,9 +72,11 @@ public class UserDAOImpl implements UserDAO{
 			pstmt.setString(2, passwd);
 			pstmt.setString(3, name);
 			pstmt.setString(4, email);
-			return pstmt.executeUpdate() == 1;
+			int result = pstmt.executeUpdate();
+			Util.doCommitOrRollback(conn, result);
 		} catch (Exception e) { 
 			e.printStackTrace();
+			if(conn != null) try {conn.rollback();}catch(Exception e1) {}
 		} finally {
 			DBUtil.executeClose(null, pstmt, conn);
 		}
@@ -150,5 +150,23 @@ public class UserDAOImpl implements UserDAO{
 		return false;
 	}
 
-
+	@Override
+	public boolean chargeAccount(String ID, int money) {
+		Connection conn = null;
+		String sql = "update \"user\" set CASH = ?";
+		PreparedStatement pstmt = null;
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, money);
+			int result = pstmt.executeUpdate();
+			Util.doCommitOrRollback(conn, result);
+		} catch (Exception e) {
+			if(conn != null)try {conn.rollback();}catch(Exception e1) {}
+			e.printStackTrace();
+		} finally {
+			DBUtil.executeClose(null, pstmt, conn);
+		}
+		return false;
+	}
 }

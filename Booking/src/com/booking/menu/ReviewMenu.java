@@ -11,6 +11,7 @@ import com.booking.dto.Review;
 import com.booking.dto.User;
 import com.booking.service.ReviewService;
 import com.booking.service.impl.ReviewServiceImpl;
+import com.util.Util;
 
 public class ReviewMenu {
 	static Review review;
@@ -19,22 +20,19 @@ public class ReviewMenu {
 	static AccommodationviewDAO adao;
 	private BufferedReader br;
 	private ReviewService reviewService;
-	private ReviewDAO reviewDAO;
 
 	//
 	public ReviewMenu(BufferedReader br) {
 		this.br = br;
-		this.reviewDAO = new ReviewDAOImpl();
-		this.reviewService = new ReviewServiceImpl(reviewDAO, br);
+		this.reviewService = new ReviewServiceImpl(br);
 	}
 	public void R_menu(BufferedReader br) {
 		// 선택된 숙소의 리뷰 보기
 		// 초기화를 안했
+		while(true) {
 		try {
-			while(true) {
 				System.out.println("숙소 리뷰 확인하시겠습니까?");
 				System.out.println("1. 예 2. 아니오");
-
 				int no = Integer.parseInt(br.readLine());
 				if(no == 1) {
 					System.out.println("숙소번호 입력하세요>");
@@ -42,23 +40,14 @@ public class ReviewMenu {
 					System.out.println("================================================");
 					reviewService.selectdetailReview(num);
 				}else if(no == 2) {
-					// 예약하기 화면으로
-//					accommodationviewDAO.selectInfo();
-					System.out.print("선택한 숙소 번호 >");
-					int num = Integer.parseInt(br.readLine());
-					System.out.println("============================");
-//					accommodationviewDAO.selectDetailInfo(num);
+					//추후 완성 의도 모르겠음 아직
 				}
-
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-
 		}
-
 	}
-	
+
 	public void reviewManagement(User user) { // 리뷰  관련 메뉴
 		int menuNum = Integer.MIN_VALUE;
 		while(true) {
@@ -68,10 +57,10 @@ public class ReviewMenu {
 			System.out.println("0. 뒤로가기");
 			try {
 				menuNum = Integer.parseInt(br.readLine());
-				if(menuNum != 1 && menuNum != 2 && menuNum != 0) {
-					continue;
-				}else {
+				if(Util.checkValidNum(menuNum, 1,2,0)) {
 					break;
+				}else {
+					System.out.println("1,2,0중 하나를 입력해주세요");
 				}
 			} catch (NumberFormatException | IOException e) {
 				e.printStackTrace();
@@ -79,7 +68,7 @@ public class ReviewMenu {
 				continue;
 			}
 		}
-		
+
 		if(menuNum == 1) {
 			reviewService.updateReview(user);
 		}else if(menuNum == 2) {

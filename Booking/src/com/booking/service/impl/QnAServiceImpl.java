@@ -6,19 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.booking.DAO.QnADAO;
+import com.booking.DAO.impl.QnADAOImpl;
 import com.booking.dto.Admin;
 import com.booking.dto.QNA;
 import com.booking.service.QnAService;
 
 public class QnAServiceImpl implements QnAService {
 
-	private QnADAO qnaDAO;
+	private QnADAO qnaDAO = new QnADAOImpl();;
 	private BufferedReader br;
-	private List<Integer> list = new ArrayList<>();
 
-	public QnAServiceImpl(QnADAO qnaDAO , BufferedReader br) {
+	public QnAServiceImpl(BufferedReader br) {
 		this.br = br;
-		this.qnaDAO = qnaDAO;
 	}	
 
 	@Override
@@ -36,9 +35,9 @@ public class QnAServiceImpl implements QnAService {
 		}
 		
 
-		while (true) {
+		while (true) { // 답변할 문의 ID선택 메서드
 			try {
-				System.out.print("답변할 QnA ID를 입력하세요: ");
+				System.out.print("답변할 문의 ID를 입력하세요: ");
 				qnaId = Integer.parseInt(br.readLine());
 				if(isValidQNA(answeredQnAList, qnaId)) {
 					break;

@@ -41,6 +41,7 @@ public class MainMenu {
 					System.out.println("2. 회원가입");
 					System.out.println("0. 프로그램 종료");
 					menuNum = Integer.parseInt(br.readLine());
+					
 					if(Util.checkValidNum(menuNum, 1,2,0)) {
 						break;
 					}else {

@@ -7,6 +7,7 @@ import com.booking.DAO.impl.QnADAOImpl;
 import com.booking.dto.Admin;
 import com.booking.service.QnAService;
 import com.booking.service.impl.QnAServiceImpl;
+import com.util.Util;
 
 public class AdminQNAMenu {
 	
@@ -17,8 +18,7 @@ public class AdminQNAMenu {
 	public AdminQNAMenu(BufferedReader br , Admin admin) {
 		this.br = br;
 		this.admin = admin;
-		QnADAO qnaDAO = new QnADAOImpl(admin);
-		this.qnaService = new QnAServiceImpl(qnaDAO, br);
+		this.qnaService = new QnAServiceImpl(br);
 		menu();
 	}
 	
@@ -34,11 +34,11 @@ public class AdminQNAMenu {
 
 			try {
 				answer = Integer.parseInt(br.readLine());
-				if(answer != 1 && answer != 2 && answer != 3 && answer != 0) {
-					System.out.println("유효하지않은 입력입니다.");
-					continue;
-				} else {
+				if(Util.checkValidNum(answer, 1,2,3,0)) {
 					break;
+				}else {
+					System.out.println("1,2,3,0 중 하나만 입력해주세요");
+					continue;
 				}
 			} catch (Exception e) {
 				System.out.println("숫자만 입력해주세요.");

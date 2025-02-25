@@ -6,12 +6,12 @@ import com.booking.DAO.AccommodationDAO;
 import com.booking.dto.Admin;
 import com.util.Util;
 
-public class AdminAccomoMenu {
+public class AdminAccommoMenu {
 	
 	private BufferedReader br;
 	private Admin admin;
 	
-	AdminAccomoMenu(BufferedReader br, Admin admin){
+	AdminAccommoMenu(BufferedReader br, Admin admin){
 		this.br = br;
 		this.admin = admin;
 		menu();

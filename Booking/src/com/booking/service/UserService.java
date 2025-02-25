@@ -11,4 +11,5 @@ public interface UserService {
     void changeUserPW(String ID);
     void deleteUser(String ID);
     void checkUserGrade(String ID);
+    void chargeAccount(String ID, int money);
 }

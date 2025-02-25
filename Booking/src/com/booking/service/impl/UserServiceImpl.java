@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService{
 			String name = br.readLine();
 
 			String email = null;
-			
+
 			while(true) { // 이메일 유효성검사 루프문
 				System.out.println("이메일을 입력해주세요");
 				email = br.readLine();
@@ -169,4 +169,27 @@ public class UserServiceImpl implements UserService{
 		else System.out.println("해당하는 사용자가 업습니다.");
 	}
 
+	@Override
+	public void chargeAccount(String ID, int money) {
+		int chargeCash = Integer.MIN_VALUE;
+		while(true) {
+			try {
+				System.out.println("금액 충전");
+				System.out.println("충전할 금액을 입력하세요.");
+				chargeCash = Integer.parseInt(br.readLine());
+				if(chargeCash > 0)  break;
+			}catch(NumberFormatException | IOException e) {
+				e.printStackTrace();
+				System.out.println("숫자만 입력하세요 ");
+				continue;
+			}
+
+			boolean result = userDAO.chargeAccount(ID, money);
+			if(result) {
+				System.out.println("충전 성공 !");
+			}else {
+				System.out.println("충전 실패 ! ! ! ");
+			}
+		}
+	}
 }

@@ -11,4 +11,5 @@ public interface UserDAO {
     boolean changeUserPW(String ID, String passwd);
     boolean deleteUser(String ID);
     String checkUserGrade(String ID);
+    boolean chargeAccount(String ID, int money);
 }

@@ -1,5 +1,7 @@
 package com.util;
 
+import java.sql.Connection;
+
 public class Util {
 	
 	public static final String emailFormat = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
@@ -9,5 +11,11 @@ public class Util {
 		}
 		return false;
 	}
-	
+	public static void doCommitOrRollback(Connection conn, int num) {
+		if(num == 1) {
+			if(conn != null)try {conn.commit();}catch(Exception e) {}
+		}else {
+			if(conn != null)try {conn.rollback();}catch(Exception e) {}
+		}
+	}
 }

@@ -11,17 +11,11 @@ import com.booking.DAO.QnADAO;
 import com.booking.dto.Admin;
 import com.booking.dto.QNA;
 import com.dbutil.DBUtil;
+import com.util.Util;
 
 public class QnADAOImpl implements QnADAO {
 	
 	
-	private Admin admin;
-	
-	
-    public QnADAOImpl(Admin admin) {
-    	super();
-    	this.admin = admin;
-	}
 
 	@Override
     public List<QNA> getUnansweredQNA() {
@@ -68,8 +62,9 @@ public class QnADAOImpl implements QnADAO {
             pstmt.setString(2, adminId);
             pstmt.setInt(3, qna_id);
 
-            int update = pstmt.executeUpdate();
-            return update == 1;
+            int result = pstmt.executeUpdate();
+            Util.doCommitOrRollback(conn, result);
+            return result == 1;
 
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
@@ -91,10 +86,11 @@ public class QnADAOImpl implements QnADAO {
             pstmt.setString(1, newAnswer);
             pstmt.setInt(2, qna_id);
 
-            int update = pstmt.executeUpdate();
-            return update == 1;
-
+            int result = pstmt.executeUpdate();
+            Util.doCommitOrRollback(conn, result);
+            return result == 1;
         } catch (SQLException | ClassNotFoundException e) {
+        	if(conn!=null) try {conn.rollback();}catch(Exception e1) {}
             e.printStackTrace();
         } finally {
             DBUtil.executeClose(null, pstmt, conn);

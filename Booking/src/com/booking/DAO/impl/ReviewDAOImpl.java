@@ -11,59 +11,77 @@ import com.booking.DAO.ReviewDAO;
 import com.booking.dto.Review;
 import com.booking.dto.User;
 import com.dbutil.DBUtil;
+import com.util.Util;
 
 public class ReviewDAOImpl implements ReviewDAO {
 
 	@Override
 	public void insertReview(Review review) {
-		String sql = "INSERT INTO REVIEW (USER_ID, ACCOMMODATION_ID, REVIEW_CONTENT, REVIEW_RATING, REVIEW_DATE) VALUES (?, ?, ?, ?, SYSDATE)";
-		try (Connection conn = DBUtil.getConnection(); 
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+		
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		try {
+			conn = DBUtil.getConnection(); 
+			sql = "INSERT INTO REVIEW (USER_ID, ACCOMMODATION_ID, REVIEW_CONTENT, REVIEW_RATING, REVIEW_DATE) VALUES (?, ?, ?, ?, SYSDATE)";
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, review.getID());
 			pstmt.setInt(2, review.getAccomodation_ID());
 			pstmt.setString(3, review.getReview_content());
 			pstmt.setInt(4, review.getReview_rating());
-
-			pstmt.executeUpdate();
+			int result = pstmt.executeUpdate();
+			Util.doCommitOrRollback(conn, result);
 		} catch (SQLException | ClassNotFoundException e) {
+			if(conn != null) try {conn.rollback();}catch(Exception e1) {}
 			e.printStackTrace();
+		}finally {
+			DBUtil.executeClose(null, pstmt, conn);
 		}
 	}
 
 	@Override
 	public boolean updateReview(int reviewID , String review_content) {
-		String sql = "UPDATE REVIEW SET REVIEW_CONTENT = ? WHERE REVIEW_ID = ?";
 		int num = Integer.MIN_VALUE;
-		try (Connection conn = DBUtil.getConnection(); 
-			PreparedStatement pstmt = conn.prepareStatement(sql)) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		try {
+			conn = DBUtil.getConnection(); 
+			sql = "UPDATE REVIEW SET REVIEW_CONTENT = ? WHERE REVIEW_ID = ?";
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, review_content);
 			pstmt.setInt(2, reviewID);
 			num = pstmt.executeUpdate();
+			Util.doCommitOrRollback(conn, num);
 		} catch (SQLException | ClassNotFoundException e) {
+			if(conn != null) try {conn.rollback();}catch(Exception e1) {}
 			e.printStackTrace();
+		}finally {
+			DBUtil.executeClose(null, pstmt, conn);
 		}
-		
-		if(num == 1) {
-			return true; // update 개수가 1개일 떄 성공
-		}else {
-			return false; // 1개 이외일때 업데이트 실패
-		}
+		return num == 1;
 	}
 
 	@Override
 	public boolean deleteReview(int reviewID) {
-		String sql = "DELETE FROM REVIEW WHERE REVIEW_ID = ?";
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
 		int result = Integer.MIN_VALUE;
-		try (Connection conn = DBUtil.getConnection(); 
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+		try {
+			conn = DBUtil.getConnection(); 
+			sql = "DELETE FROM REVIEW WHERE REVIEW_ID = ?";
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, reviewID);
 			result = pstmt.executeUpdate();
+			Util.doCommitOrRollback(conn, result);
 		} catch (SQLException | ClassNotFoundException e) {
+			if(conn != null) try {conn.rollback();}catch(Exception e1) {}
 			e.printStackTrace();
+		}finally {
+			DBUtil.executeClose(null, pstmt, conn);
 		}
-		return result == 1 ? true : false;
+		return result == 1;
 	}
 
 	@Override
@@ -72,16 +90,16 @@ public class ReviewDAOImpl implements ReviewDAO {
 		String sql = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
+
 		List<Review> reviewList = new ArrayList<Review>();
-		
+
 		try {
 			conn = DBUtil.getConnection(); 
 			sql = "SELECT * FROM REVIEW WHERE USER_ID = ?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, user.getID());
 			rs = pstmt.executeQuery();
-			
+
 			if (rs.next()) {
 				do {
 					Review review = new Review();
@@ -102,13 +120,16 @@ public class ReviewDAOImpl implements ReviewDAO {
 
 	@Override
 	public Review getReviewByID(int reviewID) {
-		String sql = "SELECT * FROM REVIEW WHERE REVIEW_ID = ?";
-		try (Connection conn = DBUtil.getConnection(); 
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		ResultSet rs = null;
+		try {
+			conn = DBUtil.getConnection(); 
+			sql = "SELECT * FROM REVIEW WHERE REVIEW_ID = ?";
+			pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, reviewID);
-			ResultSet rs = pstmt.executeQuery();
-
+			rs = pstmt.executeQuery();
 			if (rs.next()) {
 				Review review = new Review();
 				review.setReview_ID(rs.getInt("REVIEW_ID"));
@@ -121,6 +142,8 @@ public class ReviewDAOImpl implements ReviewDAO {
 			}
 		} catch (SQLException | ClassNotFoundException e) {
 			e.printStackTrace();
+		}finally {
+			DBUtil.executeClose(rs, pstmt, conn);
 		}
 		return null;
 	}
