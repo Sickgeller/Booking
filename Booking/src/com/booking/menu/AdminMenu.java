@@ -61,7 +61,7 @@ public class AdminMenu {
 			}else if(answer == 2) {
 				new AdminQNAMenu(br,admin);
 			}else if(answer == 3) {
-				couponManagement();
+				new AdminCouponMenu(br, admin);
 			}else if(answer == 0){
 				break;
 			}

@@ -50,7 +50,7 @@ public class AdminCouponMenu {
 		}else if(num == 2) 
 		{
 			System.out.println("쿠폰 등록");
-			couponService.reg_coupon(br);
+			couponService.reg_coupon();
 		}
 		else if(num == 3) {
 			System.out.println("신규 사용자에게 기본 쿠폰 발급");
