@@ -41,8 +41,8 @@ public class UserMenu {
 		while(true) {
 			
 			System.out.println("우와! 환영합니다! 😊 우와놀자에서 최고의 여행을 경험하세요!");
-			System.out.println("원하시는 항목을 선택하세요 ! ! !\n");
-			System.out.println("1. 숙소 예약");	
+			System.out.println("원하시는 항목을 선택하세요 ! ! !");
+			System.out.println("1. 숙소 관련");	
 			System.out.println("2. 마이페이지");
 			System.out.println("3. 문의하기");
 			System.out.println("4. 뒤로 가기");
@@ -64,9 +64,9 @@ public class UserMenu {
 			}
 
 			if(num == 1) {
-				System.out.println("\n숙소 예약");
-				System.out.println("숙소 메뉴 입니다.");
-				new AccommodationMenu(br);
+				System.out.println("\n숙소 관련");
+				System.out.println("숙소 관련 메뉴 입니다.");
+				new AccommodationMenu(br, user);
 
 			}else if(num == 2) {
 				System.out.println("\n마이페이지");
@@ -74,6 +74,7 @@ public class UserMenu {
 			}
 			else if(num == 3) { 
 				System.out.println("문의하기");
+				new UserQnAMenu(br,user);
 			}
 			else if(num == 4) {
 				System.out.println("🔙 뒤로 가기 완료!");
@@ -88,7 +89,7 @@ public class UserMenu {
 	}
 
 
-	public void U_Menu()  {
+	private void U_Menu()  {
 		// 사용자 정보 메뉴 
 		int no = Integer.MIN_VALUE;
 		String ID = null;
@@ -116,31 +117,7 @@ public class UserMenu {
 		}
 
 		if(no == 1) {
-			int num1 = Integer.MIN_VALUE;
-			while(true) {
-				System.out.println("회원 정보 변경");
-				System.out.println("변경하고 싶은 정보를 선택하세요.(숫자)");
-				System.out.println("1.이름 2.이메일 3.비밀번호 0.뒤로가기");
-				try {
-					num1 = Integer.parseInt(br.readLine());
-					if(Util.checkValidNum(num1, 1,2,3,0)) {
-						break;
-					}else {
-						System.out.println("유효하지않은 입력입니다. 1,2,3,0중 하나를 입력해주세요");
-					}
-				}catch(Exception e){
-					System.out.println("오로지. 오직. 무조건. [숫자]만 입력하세요");
-					continue;
-				} // catch
-			}
-			if(num1 == 1) { // 이름변경
-				userService.changeUserName(ID);
-			}else if(num1 == 2) { // 이메일 변경
-				userService.changeUserEmail(ID);
-			}else if(num1 == 3) { // 비밀번호 변경 메서드
-				userService.changeUserPW(ID);
-			}else if(num1 == 0) {
-			}
+			changeUserInfo(ID);
 		}else if(no == 3) {// 등급확인 메서드
 			userService.checkUserGrade(ID); 
 			
@@ -159,14 +136,11 @@ public class UserMenu {
 					}else if(answer == 'n') {
 						break;
 					}
-				} catch (InputMismatchException | IllegalArgumentException | StringIndexOutOfBoundsException e) {
+				} catch (IOException |InputMismatchException | IllegalArgumentException | StringIndexOutOfBoundsException e) {
 					e.printStackTrace();
 					System.out.println("y/n글자만 입력하세요");
 					continue;
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} 
+				}
 			}
 		}else if(no == 6) {
 
@@ -180,6 +154,34 @@ public class UserMenu {
 		}
 
 	} // userMenu	
+
+	private void changeUserInfo(String ID) {
+		int num1 = Integer.MIN_VALUE;
+		while(true) {
+			System.out.println("회원 정보 변경");
+			System.out.println("변경하고 싶은 정보를 선택하세요.(숫자)");
+			System.out.println("1.이름 2.이메일 3.비밀번호 0.뒤로가기");
+			try {
+				num1 = Integer.parseInt(br.readLine());
+				if(Util.checkValidNum(num1, 1,2,3,0)) {
+					break;
+				}else {
+					System.out.println("유효하지않은 입력입니다. 1,2,3,0중 하나를 입력해주세요");
+				}
+			}catch(Exception e){
+				System.out.println("오로지. 오직. 무조건. [숫자]만 입력하세요");
+				continue;
+			} // catch
+		}
+		if(num1 == 1) { // 이름변경
+			userService.changeUserName(ID);
+		}else if(num1 == 2) { // 이메일 변경
+			userService.changeUserEmail(ID);
+		}else if(num1 == 3) { // 비밀번호 변경 메서드
+			userService.changeUserPW(ID);
+		}else if(num1 == 0) {
+		}
+	}
 
 }
 

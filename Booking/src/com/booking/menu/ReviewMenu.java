@@ -2,49 +2,75 @@ package com.booking.menu;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
-import com.booking.DAO.AccommodationviewDAO;
-import com.booking.DAO.ReviewDAO;
-import com.booking.DAO.impl.ReviewDAOImpl;
-import com.booking.accommodation.Accommodation;
-import com.booking.dto.Review;
 import com.booking.dto.User;
 import com.booking.service.ReviewService;
 import com.booking.service.impl.ReviewServiceImpl;
 import com.util.Util;
 
 public class ReviewMenu {
-	static Review review;
-	static Accommodation accommodation;
 	//숙소 뷰
-	static AccommodationviewDAO adao;
+	//	static AccommodationviewDAO adao;
 	private BufferedReader br;
 	private ReviewService reviewService;
+	private List<Integer> idList;
+	private int id;
 
-	//
 	public ReviewMenu(BufferedReader br) {
 		this.br = br;
-		this.reviewService = new ReviewServiceImpl(br);
 	}
-	public void R_menu(BufferedReader br) {
-		// 선택된 숙소의 리뷰 보기
-		// 초기화를 안했
+
+	public ReviewMenu() {
+
+	}
+	//id가 -1이면 입력받지않은 상태
+	public ReviewMenu(BufferedReader br, List<Integer> idList, int id) {
+		this.br = br;
+		this.idList = idList;
+		this.id = id;
+		this.reviewService = new ReviewServiceImpl(br);
+		menu();
+	}
+	private void menu() {
+		int answer = Integer.MIN_VALUE;
 		while(true) {
-		try {
-				System.out.println("숙소 리뷰 확인하시겠습니까?");
-				System.out.println("1. 예 2. 아니오");
-				int no = Integer.parseInt(br.readLine());
-				if(no == 1) {
-					System.out.println("숙소번호 입력하세요>");
-					int num = Integer.parseInt(br.readLine());
-					System.out.println("================================================");
-					reviewService.selectdetailReview(num);
-				}else if(no == 2) {
-					//추후 완성 의도 모르겠음 아직
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			System.out.println("숙소 리뷰 확인하시겠습니까?");
+			System.out.println("1. 예 2. 아니오");
+			try {
+				answer = Integer.parseInt(br.readLine());
+			} catch (NumberFormatException | IOException e) {
+				System.out.println("숫자만 입력해주세요");
+				continue;
 			}
+			if(answer == 1) {
+				checkAccoReview();
+				return;
+			}else if(answer == 2) {
+				return;
+			}
+		}
+	}
+
+	private void checkAccoReview() {
+		int acco_id = Integer.MIN_VALUE;
+		if(id == -1) {
+			while(true) {
+				try {
+					System.out.println("리뷰를 확인할 숙소 번호를 입력해주세요");
+					acco_id = Integer.parseInt(br.readLine());
+					if(idList.contains(acco_id)) break;
+					else {
+						System.out.println("범위내의 숙소를 입력해주세요");
+						continue;
+					}
+				} catch (NumberFormatException | IOException e) {
+					e.printStackTrace();
+				}
+			}
+			reviewService.selectdetailReview(acco_id);	
+		}else{
+			reviewService.selectdetailReview(id);	
 		}
 	}
 

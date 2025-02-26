@@ -29,8 +29,7 @@ public class AdminMenu {
 		menu();
 	}
 
-
-	public void menu() {	
+	private void menu() {	
 		while(true) {
 			int answer = Integer.MIN_VALUE;
 			while(true) {
@@ -66,11 +65,5 @@ public class AdminMenu {
 				break;
 			}
 		}
-	}
-
-	private void couponManagement() { // 쿠폰 관리 메뉴
-		// 쿠폰 종류 조회
-
-
 	}
 }
