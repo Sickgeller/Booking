@@ -4,32 +4,143 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.booking.DAO.ReservationDAO;
-import com.booking.DAO.UserDAO;
-import com.booking.dto.User;
+import com.booking.dto.Reservation;
 import com.dbutil.DBUtil;
 import com.util.Util;
 
 public class ReservationDAOImpl implements ReservationDAO{
-
+	// 시작날짜 ~ 종료날짜까지 예약되어있는 인원수를 반환함 
 	@Override
-	public boolean overeas_reservation(int acco_id, User user, LocalDate s_date, LocalDate e_date, int reservation_number) {
+	public List<Integer> getDateRangeReservedNum(int accoId, LocalDate sDate, LocalDate eDate) {
+		List<Integer> result = new ArrayList<>();
+		String sql = "WITH DATE_RANGE AS ( " +
+				"    SELECT R.RESERVATION_START_DATE + LEVEL - 1 AS RESERVATION_DATE, " +
+				"           R.RESERVATION_NUMBER " +
+				"    FROM RESERVATION R " +
+				"    WHERE R.ACCOMMODATION_ID = ? " +
+				"    AND R.RESERVATION_START_DATE <= ? " +
+				"    AND R.RESERVATION_END_DATE >= ? " +
+				"    CONNECT BY LEVEL <= R.RESERVATION_END_DATE - R.RESERVATION_START_DATE + 1 " +
+				"    AND PRIOR R.RESERVATION_ID = R.RESERVATION_ID " +
+				"    AND PRIOR SYS_GUID() IS NOT NULL " +
+				") " +
+				"SELECT RESERVATION_DATE, SUM(RESERVATION_NUMBER) AS TOTAL_RESERVATION_NUMBER " +
+				"FROM DATE_RANGE " +
+				"WHERE RESERVATION_DATE BETWEEN ? AND ? " +
+				"GROUP BY RESERVATION_DATE " +
+				"ORDER BY RESERVATION_DATE";
+
+		try (Connection conn = DBUtil.getConnection();
+				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setInt(1, accoId);
+			pstmt.setDate(2, java.sql.Date.valueOf(eDate));
+			pstmt.setDate(3, java.sql.Date.valueOf(sDate));
+			pstmt.setDate(4, java.sql.Date.valueOf(sDate));
+			pstmt.setDate(5, java.sql.Date.valueOf(eDate));
+
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				result.add(rs.getInt("TOTAL_RESERVATION_NUMBER"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+
+	@Override // 숙소 최대 허용인원
+	public int getAllowedNum(int acco_id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		PreparedStatement price_pstmt = null;
-		String i_sql = null;
-		String s_sql_prcie = "SELECT ACCOMMODATION_PRICE FROM ACCOMMODATION WHERE ACCOMMODATION_ID=?";
 		ResultSet rs = null;
-		int price = 0;
-		int update = 0;
-		try {
-			String user_ID = user.getID();
-
-
+		String sql = "SELECT ALLOWED_NUMBER FROM ACCOMMODATION "
+				+ "WHERE ACCOMMODATION_ID = ?";
+		try{
 			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, acco_id);
+			rs = pstmt.executeQuery();
+			return rs.next() ? rs.getInt(1): -1; 	
 
-			i_sql = "INSERT INTO RESERVATION ("
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			DBUtil.executeClose(rs, pstmt, conn);
+		}
+		return -1;
+	}
+
+	@Override
+	public int getAccommodationStatus(int acco_id) {
+		Connection conn = null;
+		String sql = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		sql = "SELECT ACCOMMODATION_STATUS FROM ACCOMMODATION WHERE ACCOMMODATION_ID=?";
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, acco_id);
+			rs = pstmt.executeQuery();
+			pstmt.executeQuery();
+			if(rs.next()) {
+				return rs.getInt(1);
+			}else {
+				return -1;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			DBUtil.executeClose(rs, pstmt, conn);
+		}
+		return -1;
+	}
+
+
+	@Override
+	public int getPrice(int acco_id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = "SELECT ACCOMMODATION_PRICE FROM ACCOMMODATION WHERE ACCOMMODATION_ID=?";
+		ResultSet rs = null;
+		int price = Integer.MIN_VALUE;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt= conn.prepareStatement(sql);
+			pstmt.setInt(1,acco_id);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				price = rs.getInt("ACCOMMODATION_PRICE");
+				return price;
+			}else {
+				price = -1;
+			}
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			DBUtil.executeClose(rs, pstmt, conn);
+		}
+		return price;
+	}
+
+	@Override
+	public boolean reservate(String id, int acco_id, LocalDate sDate, LocalDate eDate, int price, int mem) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		ResultSet rs = null;
+		int update = Integer.MIN_VALUE;
+		try {
+			conn = DBUtil.getConnection();
+			sql = "INSERT INTO RESERVATION ("
 					+ "RESERVATION_ID, "  // PRIMARY KEY (시퀀스로 자동 증가)
 					+ "USER_ID, "
 					+ "ACCOMMODATION_ID, "
@@ -39,81 +150,75 @@ public class ReservationDAOImpl implements ReservationDAO{
 					+ "RESERVATION_NUMBER)"
 					+ "VALUES (RESERVATION_SEQ.NEXTVAL, ?, ?, ?, ?, ?,?)";
 
-			pstmt = conn.prepareStatement(i_sql);
-			price_pstmt= conn.prepareStatement(s_sql_prcie);
-			price_pstmt.setInt(1,acco_id);
-			rs = price_pstmt.executeQuery();
-
-			if(rs.next()) {
-				price = rs.getInt("ACCOMMODATION_PRICE");
-			}
-
-
-
-			pstmt.setString(1, user_ID);
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
 			pstmt.setInt(2, acco_id);
-			pstmt.setDate(3, java.sql.Date.valueOf(s_date));
-			pstmt.setDate(4, java.sql.Date.valueOf(e_date));
+			pstmt.setDate(3, java.sql.Date.valueOf(sDate));
+			pstmt.setDate(4, java.sql.Date.valueOf(eDate));
 			pstmt.setInt(5, price);
-			pstmt.setInt(6, reservation_number);
+			pstmt.setInt(6, mem);
 
 			update = pstmt.executeUpdate();
 			Util.doCommitOrRollback(conn, update);
 		}catch(Exception e) {
 			e.printStackTrace();
+		}finally {
+			DBUtil.executeClose(rs, pstmt, conn);
 		}
 		return update == 1;
 	}
+
 
 	@Override
-	public boolean domestic_reservation(int num, User user, LocalDate s_date, LocalDate e_date,
-			int reservation_number) {
+	public List<Reservation> getReservationList(String id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		PreparedStatement price_pstmt = null;
-		String i_sql = null;
-		String s_sql_prcie = "SELECT ACCOMMODATION_PRICE FROM ACCOMMODATION WHERE ACCOMMODATION_ID=?";
+		String sql = "SELECT * FROM RESERVATION WHERE USER_ID = ?";
 		ResultSet rs = null;
-		int update = 0;
-		int price = 0;
+		List<Reservation> result = new ArrayList<>();
 		try {
-			String user_ID = user.getID();
 			conn = DBUtil.getConnection();
-
-			i_sql = "INSERT INTO RESERVATION ("
-					+ "RESERVATION_ID, "  // ✅ PRIMARY KEY (시퀀스로 자동 증가)
-					+ "USER_ID, "
-					+ "ACCOMMODATION_ID, "
-					+ "RESERVATION_START_DATE, "
-					+ "RESERVATION_END_DATE, "
-					+ "RESERVATION_PRICE, "
-					+ "RESERVATION_NUMBER)"
-					+ "VALUES (RESERVATION_SEQ.NEXTVAL, ?, ?, ?, ?, ?,?)";
-
-			pstmt = conn.prepareStatement(i_sql);
-			price_pstmt= conn.prepareStatement(s_sql_prcie);
-			price_pstmt.setInt(1,num);
-			rs = price_pstmt.executeQuery();
-
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			rs = pstmt.executeQuery();
 			if(rs.next()) {
-				price = rs.getInt("ACCOMMODATION_PRICE");
+				do {
+					int reservationId = rs.getInt("RESERVATION_ID");
+					String userId = rs.getString("USER_ID");
+					int accommodationId = rs.getInt("ACCOMMODATION_ID");
+					LocalDate startDate = rs.getDate("RESERVATION_START_DATE").toLocalDate();
+					LocalDate endDate = rs.getDate("RESERVATION_END_DATE").toLocalDate();
+					int price = rs.getInt("RESERVATION_PRICE");
+					int reservationNumber = rs.getInt("RESERVATION_NUMBER");
+					result.add(new Reservation(reservationId, userId, accommodationId, startDate, endDate, price, reservationNumber));
+				}while(rs.next());
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 
 
-			pstmt.setString(1, user_ID);
-			pstmt.setInt(2, num);
-			pstmt.setDate(3, java.sql.Date.valueOf(s_date));
-			pstmt.setDate(4, java.sql.Date.valueOf(e_date));
-			pstmt.setInt(5, price);
-			pstmt.setInt(6, reservation_number);
+	@Override
+	public boolean deleteReservation(int reservationID) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = null;
+		int update = Integer.MIN_VALUE;
+		try {
+			conn = DBUtil.getConnection();
+			sql = "DELETE RESERVATION WHERE RESERVATION_ID = ?";
 
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, reservationID);
 			update = pstmt.executeUpdate();
 			Util.doCommitOrRollback(conn, update);
-
 		}catch(Exception e) {
 			e.printStackTrace();
+		}finally {
+			DBUtil.executeClose(null, pstmt, conn);
 		}
 		return update == 1;
 	}
-
 }

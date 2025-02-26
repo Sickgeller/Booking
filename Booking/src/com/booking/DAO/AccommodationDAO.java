@@ -1,5 +1,6 @@
 package com.booking.DAO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.booking.dto.Accommodation;
@@ -12,11 +13,7 @@ public interface AccommodationDAO {
 	boolean insertAccommodation(String accommodation_name, String accommodation_address, String accommodation_description,
 			int accommodation_price, String location_name, String recommendation_season, int accommodation_status, int allowed_number);
 
-	Accommodation suggest_accommodation(String local_name, String season);
 	List<Accommodation> getEveryAccommodation();
 	Accommodation getAccommodationInfo(int accommodation_id);
-	int getAllowedMem(int acco_id);
-	boolean memCheck(int acco_id, int mem, int allowedMem);
-	boolean openCheck(Accommodation accommodationInfo);
 	
 }

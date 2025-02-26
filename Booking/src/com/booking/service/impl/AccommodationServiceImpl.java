@@ -18,6 +18,7 @@ public class AccommodationServiceImpl implements AccommodationService{
 
 	private Admin admin;
 	private BufferedReader br;
+	private User user;
 	private AccommodationDAO accommodationDAO = new AccommodationDAOImpl();
 
 	public AccommodationServiceImpl(Admin admin, BufferedReader br) {
@@ -26,7 +27,7 @@ public class AccommodationServiceImpl implements AccommodationService{
 	}
 
 	public AccommodationServiceImpl(User user, BufferedReader br) {
-		// TODO Auto-generated constructor stub
+		this.user = user;
 		this.br = br;
 	}
 

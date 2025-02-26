@@ -49,9 +49,38 @@ public class ReservationMenu {
 		}else if(menuNum == 2) {
 			reservateOverseas();
 		}else if(menuNum == 3) {
-			
+			reservationManagement();
 		}else if(menuNum == 0) {
 
+		}
+	}
+
+	private void reservationManagement() {
+		int answer = Integer.MIN_VALUE;
+		while(true) {
+			System.out.println("1. 예약 목록 조회 및 결제");
+			System.out.println("2. 예약 삭제");
+			System.out.println("0. 뒤로가기");
+			try {
+				answer = Integer.parseInt(br.readLine());
+			} catch (NumberFormatException | IOException e) {
+				System.out.println("숫자만 입력해주세요");
+				continue;
+			}
+			if(Util.checkValidNum(answer, 1,2,0)) {
+				break;
+			}else {
+				System.out.println("1,2,0중 하나를 입력해주세요");
+				continue;
+			}
+		}
+		
+		if(answer == 1) {
+			reservationService.showReservation();
+		}else if(answer == 2) {
+			reservationService.deleteReservation();
+		}else if(answer == 0) {
+			return;
 		}
 	}
 
@@ -75,7 +104,7 @@ public class ReservationMenu {
 		}
 
 		if(answer == 1) {
-			reservationService.overseas_reservation();
+			reservationService.doReservate(false);
 		}else if(answer == 2) {
 			reservationService.suggest_accommodation("해외");
 		}else if(answer == 0) {
@@ -103,7 +132,7 @@ public class ReservationMenu {
 		}
 
 		if(answer == 1) {
-			reservationService.domestic_reservation();
+			reservationService.doReservate(true);
 		}else if(answer == 2) {
 			reservationService.suggest_accommodation(null);
 		}else if(answer == 0) {
