@@ -13,7 +13,7 @@ public class ReservationMenu {
 	private User user;
 	private BufferedReader br;
 	private ReservationService reservationService;
-	
+
 	public ReservationMenu(User user, BufferedReader br) {
 		super();
 		this.user = user;
@@ -30,7 +30,7 @@ public class ReservationMenu {
 			System.out.println("2. 해외");
 			System.out.println("3. 예약 관리");
 			System.out.println("0. 뒤로 가기");
-			
+
 			try {
 				menuNum = Integer.parseInt(br.readLine());
 			} catch (NumberFormatException | IOException e) {
@@ -43,16 +43,73 @@ public class ReservationMenu {
 				System.out.println("1,2,3,0중 하나만 입력해주세요");
 			}
 		}
-		
+
 		if(menuNum == 1) {
-			reservationService.reservateDomestic();
+			reservateDomestic();
 		}else if(menuNum == 2) {
-			reservationService.reservateOverseas();
+			reservateOverseas();
 		}else if(menuNum == 3) {
-			reservationService.checkMyReservation();
-		}else if(menuNum == 0) {
 			
+		}else if(menuNum == 0) {
+
 		}
+	}
+
+	private void reservateOverseas() {
+		int answer = Integer.MIN_VALUE;
+		while(true) {
+			System.out.println("1. 해외 여행지");	
+			System.out.println("2. 추천여행지 보기");
+			System.out.println("0. 뒤로가기");
+			try {
+				answer = Integer.parseInt(br.readLine());
+			} catch (NumberFormatException | IOException e) {
+				System.out.println("숫자만 입력해주세요");
+				e.printStackTrace();
+			}
+			if(Util.checkValidNum(answer, 1,2,0)) {
+				break;
+			}else {
+				System.out.println("1,2,0중 하나를 입력해주세요");
+			}
+		}
+
+		if(answer == 1) {
+			reservationService.overseas_reservation();
+		}else if(answer == 2) {
+			reservationService.suggest_accommodation("해외");
+		}else if(answer == 0) {
+			return;
+		}
+	}
+
+	private void reservateDomestic() {
+		int answer = Integer.MIN_VALUE;
+		while(true) {
+			System.out.println("1. 국내 여행지");	
+			System.out.println("2. 추천여행지 보기");
+			System.out.println("0. 뒤로가기");
+			try {
+				answer = Integer.parseInt(br.readLine());
+			} catch (NumberFormatException | IOException e) {
+				System.out.println("숫자만 입력해주세요");
+				e.printStackTrace();
+			}
+			if(Util.checkValidNum(answer, 1,2,0)) {
+				break;
+			}else {
+				System.out.println("1,2,0중 하나를 입력해주세요");
+			}
+		}
+
+		if(answer == 1) {
+			reservationService.domestic_reservation();
+		}else if(answer == 2) {
+			reservationService.suggest_accommodation(null);
+		}else if(answer == 0) {
+			return;
+		}
+
 	}
 
 }

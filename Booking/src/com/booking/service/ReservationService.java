@@ -2,8 +2,7 @@ package com.booking.service;
 
 public interface ReservationService {
 
-	void reservateOverseas();
-	void reservateDomestic();
-	void checkMyReservation();
-
+	void domestic_reservation();
+	void overseas_reservation();
+	void suggest_accommodation(String location_name);
 }

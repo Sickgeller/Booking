@@ -15,5 +15,8 @@ public interface AccommodationDAO {
 	Accommodation suggest_accommodation(String local_name, String season);
 	List<Accommodation> getEveryAccommodation();
 	Accommodation getAccommodationInfo(int accommodation_id);
+	int getAllowedMem(int acco_id);
+	boolean memCheck(int acco_id, int mem, int allowedMem);
+	boolean openCheck(Accommodation accommodationInfo);
 	
 }
