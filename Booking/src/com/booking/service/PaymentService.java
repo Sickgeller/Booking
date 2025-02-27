@@ -7,4 +7,5 @@ public interface PaymentService {
 
 	boolean processPayment();
 	boolean paymentWithPoint();
+	void showMyPayment();
 }

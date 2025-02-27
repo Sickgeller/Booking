@@ -53,7 +53,7 @@ public class PaymentMenu {
 		if(answer == 1) {
 			doPayMenu();
 
-		}else if(answer == 2) { // 현금 + 포인트
+		}else if(answer == 2) { 
 			paymentService.showMyPayment();
 		}else if(answer == 0) {
 			return; 
@@ -108,6 +108,7 @@ public class PaymentMenu {
 	private void chargeMoney(int answerCharge) {
 		while(true) {
 			try {
+				System.out.println("충전할 금액을 입력하세요");
 				int chargeMoney = Integer.parseInt(br.readLine());
 			} catch (NumberFormatException | IOException e) {
 				System.out.println("숫자만 입력하세요");

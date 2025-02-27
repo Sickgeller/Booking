@@ -2,12 +2,13 @@ package com.booking.service.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.spi.FileSystemProvider;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.booking.DAO.PaymentDAO;
 import com.booking.DAO.impl.PaymentDAOImpl;
+import com.booking.dto.Payment;
 import com.booking.dto.Reservation;
 import com.booking.dto.User;
 import com.booking.service.PaymentService;
@@ -66,7 +67,7 @@ public class PaymentServiceImpl implements PaymentService{
 		System.out.println("현재 보유한 원화입니다 : " + user.getCash() );
 		System.out.println("현재 보유한 포인트입니다 : " + user.getPoint());
 		System.out.println("사용할 포인트를 입력하세요");
-		
+
 		int point = 0;
 		while(true) {
 			try {
@@ -79,9 +80,9 @@ public class PaymentServiceImpl implements PaymentService{
 			}
 		}
 		if(userCash < reservationPrice - point ) {
-            System.out.println("결제 금액이 모자랍니다");
-            System.out.println("모자란 금액 : " + ((reservationPrice - point) - userCash));
-            return false;
+			System.out.println("결제 금액이 모자랍니다");
+			System.out.println("모자란 금액 : " + ((reservationPrice - point) - userCash));
+			return false;
 		}else {
 			System.out.println("결제 진행합니다.");
 			paymentDAO.updateCashPayment(userCash-reservationPrice);
@@ -91,6 +92,28 @@ public class PaymentServiceImpl implements PaymentService{
 			System.out.println("============================================================");
 			return true;
 		}
+	}
+	@Override
+	public void showMyPayment() {
+		List<Payment> paymentList =  paymentDAO.getPaymentHistory();
+		if(paymentList.isEmpty()) System.out.println("결제 내역이 없습니다.");
+		System.out.println("=============================");
+		for(Payment payment : paymentList) {
+			System.out.println("번호\t결제유저\t결제 진행한 예약 ID\t사용한 현금 \t결제날짜");
+			System.out.print(payment.getPayment_id());
+			System.out.print("      ");
+
+			System.out.print(payment.getUser_id());
+			System.out.print("     ");
+			System.out.print(payment.getReservation_id());
+			System.out.print("           ");
+			System.out.print(payment.getPayment_total_price());
+			System.out.print("            ");
+			System.out.print(payment.getPayment_date());
+			System.out.println();
+		}
+		System.out.println("=============================");
+
 	}
 
 }
