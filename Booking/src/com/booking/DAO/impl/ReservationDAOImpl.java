@@ -210,6 +210,7 @@ public class ReservationDAOImpl implements ReservationDAO{
 					LocalDate startDate = rs.getDate("RESERVATION_START_DATE").toLocalDate();
 					LocalDate endDate = rs.getDate("RESERVATION_END_DATE").toLocalDate();
 					int price = rs.getInt("RESERVATION_PRICE");
+					System.out.println(price);
 					int reservationNumber = rs.getInt("RESERVATION_NUMBER");
 					result.add(new Reservation(reservationId, userId, accommodationId, startDate, endDate, price, reservationNumber));
 				}while(rs.next());

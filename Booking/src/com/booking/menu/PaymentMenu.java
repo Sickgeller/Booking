@@ -17,14 +17,16 @@ public class PaymentMenu {
 
 	private BufferedReader br;
 	private User user;
-	private PaymentService paymentService = new PaymentServiceImpl(br, user);
-	private ReservationService reservationService = new ReservationServiceImpl(br, user);
+	private PaymentService paymentService;
+	private ReservationService reservationService;
 	private UserService userService = new UserServiceImpl(br);
 	
 	public PaymentMenu(BufferedReader br, User user) {
 		super();
 		this.br = br;
 		this.user = user;
+		reservationService = new ReservationServiceImpl(br, user);
+		paymentService = new PaymentServiceImpl(br, user);
 		menu();
 	}
 
@@ -106,15 +108,16 @@ public class PaymentMenu {
 	}
 
 	private void chargeMoney(int answerCharge) {
+		int chargeMoney = 0;
 		while(true) {
 			try {
 				System.out.println("충전할 금액을 입력하세요");
-				int chargeMoney = Integer.parseInt(br.readLine());
+				chargeMoney = Integer.parseInt(br.readLine());
 			} catch (NumberFormatException | IOException e) {
 				System.out.println("숫자만 입력하세요");
 				continue;
 			}
-			userService.chargeAccount(user.getID(), answerCharge);
+			userService.chargeAccount(user.getID(), chargeMoney);
 		}
 	}
 

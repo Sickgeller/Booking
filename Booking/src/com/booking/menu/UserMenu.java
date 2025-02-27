@@ -64,7 +64,6 @@ public class UserMenu {
 			}
 
 			if(num == 1) {
-				System.out.println("\n숙소 관련");
 				System.out.println("숙소 관련 메뉴 입니다.");
 				new AccommodationMenu(br, user);
 

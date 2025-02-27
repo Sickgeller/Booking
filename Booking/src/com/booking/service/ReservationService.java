@@ -8,4 +8,5 @@ public interface ReservationService {
 	void suggest_accommodation(String location_name);
 	Reservation showAndSelectReservation();
 	void deleteReservation();
+	
 }

@@ -18,38 +18,83 @@ public class PaymentServiceImpl implements PaymentService{
 
 	private BufferedReader br;
 	private User user;
-	private ReservationService reservationService = new ReservationServiceImpl(br, user);
-	private PaymentDAO paymentDAO = new PaymentDAOImpl(user);
+	private ReservationService reservationService;
+	private PaymentDAO paymentDAO;
 
 	public PaymentServiceImpl(BufferedReader br, User user) {
 		super();
 		this.br = br;
 		this.user = user;
+		reservationService = new ReservationServiceImpl(br, user);
+		paymentDAO = new PaymentDAOImpl(user);
 	}
 	@Override
 	public List<Integer> selectPaymentTarget() {
 		List<Integer> result = new ArrayList<>();
-		Reservation selectedReservation = reservationService.showAndSelectReservation();
+		Reservation selectedReservation = selectUnpaidReservation();
 		result.add(selectedReservation.getReservation_id());
 		result.add(user.getCash());
-		result.add(selectedReservation.getPrice());
+		result.add(selectedReservation.getReservation_price());
 		return result;
+	}
+	private Reservation selectUnpaidReservation() {
+		List<Reservation> unpaidReserv = paymentDAO.getUnpaidReservation(user.getID());
+		List<Integer> idList = new ArrayList<>();
+		for(Reservation reserv : unpaidReserv) {
+			idList.add(reserv.getReservation_id());
+			System.out.println("============================================================");
+			System.out.println("예약 번호 : " + reserv.getReservation_id());
+			System.out.println("사용자 ID : " + reserv.getUser_id());
+			System.out.println("숙소 번호 : " + reserv.getAccomodation_id());
+			System.out.println("예약 시작일 : " + reserv.getReservation_start_date());
+			System.out.println("예약 종료일 : " + reserv.getReservation_end_date());
+			System.out.println("가격 : " + reserv.getReservation_price());
+			System.out.println("예약 인원 : " + reserv.getReservation_number() + "명");
+			System.out.println("============================================================");
+		}
+		int answer = Integer.MIN_VALUE;
+		
+		while(true) {
+			System.out.println("예약 번호를 입력해주세요");
+			try {
+				answer = Integer.parseInt(br.readLine());
+			} catch (NumberFormatException | IOException e) {
+				System.out.println("숫자만 입력해주세요");
+				continue;
+			}
+			if(idList.contains(answer)) {
+				break;
+			}else {
+				System.out.println("목록에 있는 id를 입력해주세요");
+			}
+		}
+		for(Reservation reserv : unpaidReserv) {
+			if(reserv.getReservation_id() == answer) return reserv;
+		}
+		return null;
 	}
 	@Override
 	public boolean processPayment() {
 		List<Integer> list = selectPaymentTarget(); 
-		int reservationId = list.get(1);
-		int userCash = list.get(2);
-		int reservationPrice = list.get(3);
-		boolean updateResult = false;
+		int reservationId = list.get(0);
+		int userCash = list.get(1);
+		int reservationPrice = list.get(2);
 		if(userCash > reservationPrice) {
 			System.out.println("결제 진행합니다.");
-			updateResult = paymentDAO.updateCashPayment(userCash-reservationPrice);
+			paymentDAO.updateCashPayment(userCash-reservationPrice);
 			System.out.println("============================================================");
+			
 			System.out.println("👤 사용자 ID : " + user.getID());
 			System.out.println("💰 보유 금액 : " + user.getCash());
 			System.out.println("============================================================");
-			updateResult = true;
+			boolean result = paymentDAO.insertPayment(reservationId, reservationPrice , 0, reservationPrice , 1);
+			if(result) {
+				System.out.println("결제가 완료되었습니다.");
+				return true;
+			}else {
+				System.out.println("결제가실패했습니다.");
+				return false;
+			}
 		}else {
 			int requiredCash = reservationPrice-userCash;
 			System.out.printf("잔액이 부족하여 결제할 수 없습니다. 추가로 %d원이 필요합니다.\n", requiredCash);
@@ -59,9 +104,9 @@ public class PaymentServiceImpl implements PaymentService{
 	@Override
 	public boolean paymentWithPoint() {
 		List<Integer> list = selectPaymentTarget(); 
-		int reservationId = list.get(1);
-		int userCash = list.get(2);
-		int reservationPrice = list.get(3);
+		int reservationId = list.get(0);
+		int userCash = list.get(1);
+		int reservationPrice = list.get(2);
 
 		System.out.printf("숙소 가격: %d원\n", reservationPrice);
 		System.out.println("현재 보유한 원화입니다 : " + user.getCash() );
@@ -79,18 +124,26 @@ public class PaymentServiceImpl implements PaymentService{
 				continue;
 			}
 		}
-		if(userCash < reservationPrice - point ) {
+		int priceWithPoint = reservationPrice - point;
+		if(userCash < priceWithPoint ) {
 			System.out.println("결제 금액이 모자랍니다");
-			System.out.println("모자란 금액 : " + ((reservationPrice - point) - userCash));
+			System.out.println("모자란 금액 : " + (priceWithPoint - userCash));
 			return false;
 		}else {
 			System.out.println("결제 진행합니다.");
-			paymentDAO.updateCashPayment(userCash-reservationPrice);
+			paymentDAO.updateCashPayment(userCash - priceWithPoint);
 			System.out.println("============================================================");
 			System.out.println("👤 사용자 ID : " + user.getID());
 			System.out.println("💰 보유 금액 : " + user.getCash());
 			System.out.println("============================================================");
-			return true;
+			boolean result = paymentDAO.insertPayment(reservationId, priceWithPoint , point, reservationPrice , 2);
+			if(result) {
+				System.out.println("결제가 완료되었습니다.");
+				return true;
+			}else {
+				System.out.println("결제가 실패했습니다.");
+				return false;
+			}
 		}
 	}
 	@Override

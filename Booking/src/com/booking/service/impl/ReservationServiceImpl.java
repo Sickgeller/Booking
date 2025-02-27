@@ -2,16 +2,11 @@ package com.booking.service.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
-
 import com.booking.DAO.AccommodationDAO;
 import com.booking.DAO.ReservationDAO;
 import com.booking.DAO.impl.AccommodationDAOImpl;
@@ -20,7 +15,6 @@ import com.booking.dto.Accommodation;
 import com.booking.dto.Reservation;
 import com.booking.dto.User;
 import com.booking.service.ReservationService;
-import com.dbutil.DBUtil;
 
 public class ReservationServiceImpl implements ReservationService{
 
@@ -233,7 +227,7 @@ public class ReservationServiceImpl implements ReservationService{
 			System.out.println("숙소 번호 : " + reserv.getAccomodation_id());
 			System.out.println("예약 시작일 : " + reserv.getReservation_start_date());
 			System.out.println("예약 종료일 : " + reserv.getReservation_end_date());
-			System.out.println("가격 : " + reserv.getReservation_id());
+			System.out.println("가격 : " + reserv.getReservation_price());
 			System.out.println("예약 인원 : " + reserv.getReservation_number() + "명");
 			System.out.println("============================================================");
 		}

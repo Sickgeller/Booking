@@ -11,22 +11,14 @@ public class Reservation {
 	LocalDate reservation_end_date;
 	int reservation_price;
 	int reservation_number;
-	int price;
 	
-	public int getPrice() {
-		return price;
-	}
-	public void setPrice(int price) {
-		this.price = price;
-	}
-	public Reservation() {
-	}
 	public Reservation(int reservation_id, String user_id, int accomodation_id, LocalDate reservation_start_date,
 			LocalDate reservation_end_date, int reservation_price, int reservation_number) {
 		super();
 		this.reservation_id = reservation_id;
 		this.user_id = user_id;
 		this.accomodation_id = accomodation_id;
+		this.reservation_price = reservation_price;
 		this.reservation_start_date = reservation_start_date;
 		this.reservation_end_date = reservation_end_date;
 		this.reservation_price = reservation_price;
