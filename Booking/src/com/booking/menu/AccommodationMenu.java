@@ -80,9 +80,6 @@ public class AccommodationMenu {
 			if (ir.hasNext()) {
 				System.out.println("숙소");
 			    List<Integer> idList = ir.next();
-			    for(Integer num123 : idList) {
-			    	System.out.println(num123);
-			    }
 			    Integer tmp = map.get(idList);
 			    new ReviewMenu(br, idList, tmp);
 			} else {
