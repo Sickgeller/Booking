@@ -25,25 +25,38 @@ public class MainMenu {
 	private AdminService adminService = new AdminServiceImpl();
 	
 	public MainMenu(){
-		callMenu();
+		menu();
 	}
 
-	private void callMenu(){
+	private void menu(){
 		while(true) {
 			int menuNum = Integer.MAX_VALUE;
+			Util.consoleClean();
+			System.out.println("================================================================\n"
+					
+							+ "|  _    _  _____  _    _   _   _  _____  _         ___   ___   |                   \r\n"
+							+ "| | |  | ||  _  || |  | | | \\ | ||  _  || |       |_  | / _ \\  |                   \r\n"
+							+ "| | |  | || | | || |  | | |  \\| || | | || |         | |/ /_\\ \\ |                \r\n"
+							+ "| | |/\\| || | | || |/\\| | | . ` || | | || |         | ||  _  | |                   \r\n"
+							+ "| \\  /\\  /\\ \\_/ /\\  /\\  / | |\\  |\\ \\_/ /| |____ /\\__/ /| | | | |           \r\n"
+							+ "|  \\/  \\/  \\___/  \\/  \\/  \\_| \\_/ \\___/ \\_____/ \\____/ \\_| |_/ |         \r\n"
+							+ "|                                                              |     ");
+					System.out.println("================================================================");
+					
 			while(true) {
 				try {
-					System.out.println("================================================================================");
-					System.out.println("                         ✨🌟  우와놀자 - 콘솔 예약 시스템  🌟✨                    ");
-					System.out.println("================================================================================");
-					System.out.println("👉 원하시는 메뉴를 입력해주세요");
-					System.out.println("1. 로그인");
-					System.out.println("2. 회원가입");
-					System.out.println("0. 프로그램 종료");
+					System.out.println("================================================================");
+					System.out.println("| 👉 원하시는 메뉴를 입력해주세요                                      |");
+					System.out.println("================================================================");
+					System.out.println("| 1. 로그인                                                      |");
+					System.out.println("| 2. 회원가입                                                     |");
+					System.out.println("| 0. 프로그램 종료                                                 |");
+					System.out.println("================================================================");
 					menuNum = Integer.parseInt(br.readLine());
 					
 					if(Util.checkValidNum(menuNum, 1,2,0)) {
 						break;
+						
 					}else {
 						System.out.println("1,2,0 번 메뉴중 하나를 입력해주세요");
 						continue;
@@ -57,16 +70,18 @@ public class MainMenu {
 
 			if(menuNum == 1) {
 				try {
-					System.out.println("로그인할 ID를 입력해주세요");
+					System.out.println("👉 로그인할 ID를 입력해주세요");
 					String ID = br.readLine();
-					System.out.println("비밀번호를 입력해주세요");
+					System.out.println("👉 비밀번호를 입력해주세요");
 					String passwd = br.readLine();
 
 					if((admin = adminService.login(ID, passwd)) != null) { // 로그인할떄 admin이 잡히면 admin을 부여
+						Util.consoleClean();
 						new AdminMenu(br, admin); // 어드민메뉴로 분리
 					}
 					else if((user = userService.login(ID, passwd)) != null) {
-						System.out.println("로그인이 완료되었습니다.");
+						Util.consoleClean();
+						System.out.println("👉 로그인이 완료되었습니다.");
 						new UserMenu(br,user);
 					}
 				} catch (Exception e) {
@@ -79,6 +94,8 @@ public class MainMenu {
 			}
 		}
 	}
+
+	
 
 	
 }

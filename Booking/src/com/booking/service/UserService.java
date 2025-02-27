@@ -12,4 +12,5 @@ public interface UserService {
     void deleteUser(String ID);
     void checkUserGrade(String ID);
     void chargeAccount(String ID, int money);
+	void showUserCoupon(String iD);
 }

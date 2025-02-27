@@ -1,5 +1,9 @@
 package com.booking.DAO;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.booking.dto.Coupon;
 import com.booking.dto.User;
 
 public interface UserDAO {
@@ -12,4 +16,5 @@ public interface UserDAO {
     boolean deleteUser(String ID);
     String checkUserGrade(String ID);
     boolean chargeAccount(String ID, int money);
+	List<List<String>> getCouponList(String iD);
 }

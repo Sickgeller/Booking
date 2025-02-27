@@ -27,7 +27,6 @@ public class AdminDAOImpl implements AdminDAO {
 			pstmt.setString(2, passwd);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
-				System.out.println("로그인 성공");
 				String email = rs.getString("ADMIN_EMAIL");
 				String name = rs.getString("ADMIN_NAME");
 				result = new Admin(ID,passwd,email,name);

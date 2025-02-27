@@ -18,4 +18,10 @@ public class Util {
 			if(conn != null)try {conn.rollback();}catch(Exception e) {}
 		}
 	}
+	
+	public static  void consoleClean() {
+		for(int i = 0 ; i < 20 ; i++) {
+			System.out.println();
+		}
+	}
 }

@@ -27,6 +27,7 @@ public class Coupon {
 		// TODO Auto-generated constructor stub
 	}
 	
+
 	public int getCoupon_ID() {
 		return coupon_ID;
 	}

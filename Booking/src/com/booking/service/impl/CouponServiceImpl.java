@@ -2,6 +2,7 @@ package com.booking.service.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.booking.DAO.CouponDAO;
@@ -76,24 +77,25 @@ public class CouponServiceImpl implements CouponService{
 	@Override
 	public void giveCouponUser() {
 		List<Coupon> couponList = couponDAO.getEveryCoupon();
+		List<Integer> idList = new ArrayList<>();
 		for(Coupon coupon : couponList) {
 			System.out.println("쿠폰 번호 : " + coupon.getCoupon_ID());
+			idList.add(coupon.getCoupon_ID());
 			System.out.println("쿠폰 코드 : " + coupon.getCoupon_code());
 			System.out.println("발급 일자 : " + coupon.getCoupon_issuance_date());
 			System.out.println("만료일 : " + coupon.getCoupon_expired_date());
 			System.out.println("할인 금액 : " + coupon.getCoupon_discount());
 		}
 		int coupon_id = Integer.MIN_VALUE;
-		boolean check = true;
-		while(check) {
+		while(true) {
 			try {
 				coupon_id = Integer.parseInt(br.readLine());
-				for(Coupon coupon : couponList) {
-					if(coupon.getCoupon_ID() == coupon_id) {
-						check = true;
-					}
+				if(idList.contains(coupon_id)) {
+					break;
+				}else {
+					System.out.println("목록에 있는 쿠폰 ID를 입력해주세요");
+					continue;
 				}
-				System.out.println("목록에 있는 쿠폰 ID를 입력해주세요");
 			} catch (NumberFormatException | IOException e) {
 				System.out.println("숫자만 입력해주세요");
 				continue;

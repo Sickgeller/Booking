@@ -143,7 +143,8 @@ public class UserMenu {
 				}
 			}
 		}else if(no == 6) {
-
+			System.out.printf("%s 님이 보유하신 쿠폰입니다 \n", ID);
+			userService.showUserCoupon(ID);
 
 		}else if(no == 7) {
 			System.out.println("🚪 로그아웃되었습니다. 프로그램을 종료합니다.");

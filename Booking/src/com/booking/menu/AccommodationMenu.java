@@ -74,33 +74,13 @@ public class AccommodationMenu {
 			}
 		}
 		if(num == 1) {
-			// 더좋은로직 있을거같은데 걍 생각나는대로구현
-			Map<List<Integer>, Integer> map = accommodationService.showDomesticInfo();
-			Iterator<List<Integer>> ir = map.keySet().iterator();
-			if (ir.hasNext()) {
-				System.out.println("숙소");
-			    List<Integer> idList = ir.next();
-			    for(Integer num123 : idList) {
-			    	System.out.println(num123);
-			    }
-			    Integer tmp = map.get(idList);
-			    new ReviewMenu(br, idList, tmp);
-			} else {
-			    System.out.println("숙소 데이터가 없습니다.");
-			}
+			accommodationService.domestic();
 		}else if(num == 2) {
-			Map<List<Integer>, Integer> map = accommodationService.showOverseasInfo();
-			Iterator<List<Integer>> ir = map.keySet().iterator();
-			if (ir.hasNext()) {
-			    List<Integer> idList = ir.next();
-			    Integer tmp = map.get(idList);
-			    new ReviewMenu(br, idList, tmp);
-			} else {
-			    System.out.println("숙소 데이터가 없습니다.");
-			}
+			accommodationService.oversea();
 		}else if(num == 0) {
 			return;
 		}
 	}
+
 
 }

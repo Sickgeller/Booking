@@ -2,12 +2,13 @@ package com.booking.service.impl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.List;
 
 import com.booking.DAO.UserDAO;
 import com.booking.DAO.impl.UserDAOImpl;
+import com.booking.dto.Coupon;
 import com.booking.dto.User;
 import com.booking.service.UserService;
-import com.dbutil.DBUtil;
 import com.util.Util;
 
 public class UserServiceImpl implements UserService{
@@ -165,7 +166,7 @@ public class UserServiceImpl implements UserService{
 	public void checkUserGrade(String ID) {
 		System.out.println("등급 확인");
 		String grade = userDAO.checkUserGrade(ID);
-		if(grade != null) System.out.printf("사용자의 등급은 %s입니다" , grade);
+		if(grade != null) System.out.printf("사용자의 등급은 %s입니다\n" , grade);
 		else System.out.println("해당하는 사용자가 업습니다.");
 	}
 
@@ -197,5 +198,23 @@ public class UserServiceImpl implements UserService{
 			System.out.println("충전 실패 ! ! ! ");
 		}
 
+	}
+
+	@Override
+	public void showUserCoupon(String iD) {
+		List<List<String>> couponList = userDAO.getCouponList(iD);
+		if(couponList.isEmpty()) {
+			System.out.println("보유한 쿠폰이 없습니다.");
+			return;
+		}
+		for(int i = 0 ; i < couponList.size() ; i++) {
+			List<String> list = couponList.get(i);
+			System.out.println("쿠폰 번호 : " + list.get(0));
+			System.out.println("쿠폰 코드 : " + list.get(1));
+			System.out.println("발급 일자 : " + list.get(2));
+			System.out.println("만료일 : " + list.get(3));
+			System.out.println("할인 금액 : " + list.get(4));
+			System.out.println("쿠폰보유개수 : " + list.get(5));
+		}
 	}
 }
