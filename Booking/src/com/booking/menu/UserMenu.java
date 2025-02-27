@@ -39,18 +39,14 @@ public class UserMenu {
 
 	private void userMenu() {
 		while(true) {
-			System.out.println("================================================================");
-			System.out.println("|                     ★     메뉴    ★                           |");
-			System.out.println("================================================================");
-			System.out.println("| 우와! 환영합니다! 😊 우와놀자에서 최고의 여행을 경험하세요!                |");
-			System.out.println("| 원하시는 항목을 골라주세요  ! ! !                                   |");
-			System.out.println("================================================================");
-			System.out.println("| 1.숙소 관리                                                    |");
-			System.out.println("| 2.마이페이지                                                    |");
-			System.out.println("| 3.문의하기                                                     |");
-			System.out.println("| 4.뒤로 가기                                                    |");
-			System.out.println("| 0.로그아웃                                                     |");
-			System.out.println("================================================================");
+			
+			System.out.println("우와! 환영합니다! 😊 우와놀자에서 최고의 여행을 경험하세요!");
+			System.out.println("원하시는 항목을 선택하세요 ! ! !");
+			System.out.println("1. 숙소 관련");	
+			System.out.println("2. 마이페이지");
+			System.out.println("3. 문의하기");
+			System.out.println("4. 뒤로 가기");
+			System.out.println("0. 로그아웃");
 			int num = Integer.MIN_VALUE;
 
 			while(true) {
