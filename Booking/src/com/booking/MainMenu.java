@@ -69,16 +69,18 @@ public class MainMenu {
 
 			if(menuNum == 1) {
 				try {
-					System.out.println("로그인할 ID를 입력해주세요");
+					System.out.println("👉 로그인할 ID를 입력해주세요");
 					String ID = br.readLine();
-					System.out.println("비밀번호를 입력해주세요");
+					System.out.println("👉 비밀번호를 입력해주세요");
 					String passwd = br.readLine();
 
 					if((admin = adminService.login(ID, passwd)) != null) { // 로그인할떄 admin이 잡히면 admin을 부여
+						Util.consoleClean();
 						new AdminMenu(br, admin); // 어드민메뉴로 분리
 					}
 					else if((user = userService.login(ID, passwd)) != null) {
-						System.out.println("로그인이 완료되었습니다.");
+						Util.consoleClean();
+						System.out.println("👉 로그인이 완료되었습니다.");
 						new UserMenu(br,user);
 					}
 				} catch (Exception e) {
@@ -91,6 +93,8 @@ public class MainMenu {
 			}
 		}
 	}
+
+	
 
 	
 }
