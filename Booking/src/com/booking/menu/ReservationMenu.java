@@ -76,7 +76,7 @@ public class ReservationMenu {
 		}
 		
 		if(answer == 1) {
-			reservationService.showReservation();
+			new PaymentMenu(br, user);
 		}else if(answer == 2) {
 			reservationService.deleteReservation();
 		}else if(answer == 0) {

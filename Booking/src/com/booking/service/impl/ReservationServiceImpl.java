@@ -257,8 +257,41 @@ public class ReservationServiceImpl implements ReservationService{
 	}
 
 	@Override
-	public void showReservation() {
-
+	public Reservation showAndSelectReservation() {
+		List<Reservation> reservationList = reservationDAO.getReservationList(user.getID());
+		List<Integer> idList = new ArrayList<>();
+		for(Reservation reserv : reservationList) {
+			idList.add(reserv.getReservation_id());
+			System.out.println("============================================================");
+			System.out.println("예약 번호 : " + reserv.getReservation_id());
+			System.out.println("사용자 ID : " + reserv.getUser_id());
+			System.out.println("숙소 번호 : " + reserv.getAccomodation_id());
+			System.out.println("예약 시작일 : " + reserv.getReservation_start_date());
+			System.out.println("예약 종료일 : " + reserv.getReservation_end_date());
+			System.out.println("가격 : " + reserv.getReservation_id());
+			System.out.println("예약 인원 : " + reserv.getReservation_number() + "명");
+			System.out.println("============================================================");
+		}
+		int answer = Integer.MIN_VALUE;
+		
+		while(true) {
+			System.out.println("예약 번호를 입력해주세요");
+			try {
+				answer = Integer.parseInt(br.readLine());
+			} catch (NumberFormatException | IOException e) {
+				System.out.println("숫자만 입력해주세요");
+				continue;
+			}
+			if(idList.contains(answer)) {
+				break;
+			}else {
+				System.out.println("목록에 있는 id를 입력해주세요");
+			}
+		}
+		for(Reservation reserv : reservationList) {
+			if(reserv.getReservation_id() == answer) return reserv;
+		}
+		return null;
 	}
 
 	@Override
@@ -289,9 +322,9 @@ public class ReservationServiceImpl implements ReservationService{
 				continue;
 			}
 		}
-		
+
 		boolean result = reservationDAO.deleteReservation(reservationID);
-		
+
 		if(result) {
 			System.out.println("삭제가 완료되었습니다.");
 		}else {
