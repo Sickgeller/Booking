@@ -3,6 +3,7 @@ package com.booking.DAO;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.booking.dto.Accommodation;
 import com.booking.dto.Reservation;
 
 public interface ReservationDAO {
@@ -14,5 +15,6 @@ public interface ReservationDAO {
 	boolean reservate(String id, int acco_id, LocalDate sDate, LocalDate eDate, int i, int mem);
 	List<Reservation> getReservationList(String id);
 	boolean deleteReservation(int reservationID);
+	Accommodation suggestAcco(String location_name, String rcmd_season);
 
 }

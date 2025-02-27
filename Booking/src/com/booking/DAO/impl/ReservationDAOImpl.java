@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import com.booking.DAO.ReservationDAO;
+import com.booking.dto.Accommodation;
 import com.booking.dto.Reservation;
 import com.dbutil.DBUtil;
 import com.util.Util;
@@ -220,5 +222,52 @@ public class ReservationDAOImpl implements ReservationDAO{
 			DBUtil.executeClose(null, pstmt, conn);
 		}
 		return update == 1;
+	}
+
+
+	@Override
+	public Accommodation suggestAcco(String location_name, String rcmd_season) {
+		Connection conn;
+		PreparedStatement pstmt;
+		String sql;
+		ResultSet rs;
+		Accommodation result = null;;
+		try {
+
+			conn = DBUtil.getConnection();
+			sql = "SELECT * FROM ACCOMMODATION WHERE LOCATION_NAME = ? AND RECOMMENDATION_SEASON = ?";
+			pstmt = conn.prepareStatement(sql , ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			pstmt.setString(1, location_name);
+			pstmt.setString(2, rcmd_season);
+			rs = pstmt.executeQuery();
+			int size = 0;
+			while(rs.next()) {
+				size++;
+			}
+
+			if(size == 0) {
+				return null;
+			}
+			int colNum = new Random().nextInt(size)+1;
+			rs.absolute(colNum);
+			int cnt = 1;
+			int accommodatin_id = rs.getInt(cnt++);
+			String accommodation_name = rs.getString(cnt++);
+			String accommodation_address = rs.getString(cnt++);
+			String accommodation_description = rs.getString(cnt++);
+			int accommodation_price = rs.getInt(cnt++);
+			String location = rs.getString(cnt++);
+			String recommendation_season = rs.getString(cnt++);
+			int accommodation_status = rs.getInt(cnt++);
+			int allowed_number = rs.getInt(cnt++);
+			result = new Accommodation(accommodatin_id, accommodation_name, accommodation_address,
+					accommodation_description, accommodation_price, location,
+					recommendation_season, accommodation_status, allowed_number);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+		
 	}
 }

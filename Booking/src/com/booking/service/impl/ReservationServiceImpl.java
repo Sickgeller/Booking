@@ -35,21 +35,9 @@ public class ReservationServiceImpl implements ReservationService{
 		this.user = user;
 	}
 
-	private boolean posDate(LocalDate s_date, LocalDate e_date,LocalDate today) {
-		if (!e_date.isAfter(s_date)) {
-			System.out.println("종료 날짜는 시작 날짜(" + s_date + ") 이후여야 합니다. 다시 입력하세요.");
-			return false;
-		}
-		if(!s_date .isAfter(today)) {
-			System.out.println(today + "이후 날짜만 예약 가능합니다.");
-			return false;
-		}
-		return true;
-	}
-
 	@Override
 	public void doReservate(boolean isDomestic) {
-		int acco_id = selectAccoId(isDomestic);
+		int acco_id = selectAccoId(isDomestic); // 숙소ID입력
 		LocalDate sDate = null;
 		LocalDate eDate = null;
 		while(true) {
@@ -113,6 +101,18 @@ public class ReservationServiceImpl implements ReservationService{
 			System.out.println("예약 실패 ! ! !");
 		}
 	}
+	
+	private boolean posDate(LocalDate s_date, LocalDate e_date,LocalDate today) {
+		if (!e_date.isAfter(s_date)) {
+			System.out.println("종료 날짜는 시작 날짜(" + s_date + ") 이후여야 합니다. 다시 입력하세요.");
+			return false;
+		}
+		if(!s_date .isAfter(today)) {
+			System.out.println(today + "이후 날짜만 예약 가능합니다.");
+			return false;
+		}
+		return true;
+	}
 
 	private int selectAccoId(boolean isDomestic) {
 		List<Accommodation> accommodationList;
@@ -169,12 +169,6 @@ public class ReservationServiceImpl implements ReservationService{
 		List<String> season_list = new ArrayList<>(Arrays.asList(seasonArr));
 
 
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		String sql = null;
-		ResultSet rs = null;
-
-
 		if(location_name == null) { // 원하는 지역 입력받는단
 			while(true) {
 				System.out.println("숙소 추천 입니다.");
@@ -208,7 +202,6 @@ public class ReservationServiceImpl implements ReservationService{
 			try {
 				tmp = br.readLine();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if(season_list.contains(tmp)) {
@@ -220,41 +213,13 @@ public class ReservationServiceImpl implements ReservationService{
 			}
 		}
 
-
-		try {
-
-			conn = DBUtil.getConnection();
-			sql = "SELECT * FROM ACCOMMODATION WHERE LOCATION_NAME = ? AND RECOMMENDATION_SEASON = ?";
-			pstmt = conn.prepareStatement(sql , ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-			pstmt.setString(1, location_name);
-			pstmt.setString(2, rcmd_season);
-			rs = pstmt.executeQuery();
-			int size = 0;
-			while(rs.next()) {
-				size++;
-			}
-
-			if(size == 0) {
-				System.out.println("선택한 조건의 숙소가 없습니다.");
-				return;
-			}
-			int colNum = new Random().nextInt(size)+1;
-			rs.absolute(colNum);
-			int accd_id = rs.getInt(1);
-			String accd_name = rs.getString(2);
-			String accd_address = rs.getString(3);
-			String accd_description = rs.getString(4);
-			int accd_price = rs.getInt(5);
-
-			System.out.println("추천 결과입니다.");
-			System.out.printf("번호 : %d번 , 숙소이름 : %s , 숙소주소 : %s\n" , accd_id,accd_name,accd_address);
-			System.out.println(accd_description);
-			System.out.println("가격 : " + accd_price);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		Accommodation suggestAcco = reservationDAO.suggestAcco(location_name, rcmd_season);
+		System.out.println("추천 결과입니다.");
+		System.out.printf("번호 : %d번 , 숙소이름 : %s , 숙소주소 : %s\n" , suggestAcco.getAccommodatin_id(),suggestAcco.getAccommodation_name(),suggestAcco.getAccommodation_address());
+		System.out.println(suggestAcco.getAccommodation_address());
+		System.out.println("가격 : " + suggestAcco.getAccommodation_price());
 	}
+
 
 	@Override
 	public void showReservation() {
