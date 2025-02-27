@@ -34,17 +34,12 @@ public class AdminMenu {
 			int answer = Integer.MIN_VALUE;
 			while(true) {
 				try {
-					System.out.println("================================================================");
-					System.out.println("|                     ★ 관리자 메뉴 ★                             |");
-					System.out.println("================================================================");
-					System.out.println("| 원하시는 항목을 골라주세요                                          |");
-					System.out.println("================================================================");
-					System.out.println("| 1.숙소 관리                                                    |");
-					System.out.println("| 2.문의 관리 페이지                                               |");
-					System.out.println("| 3.쿠폰 관리 페이지                                               |");
-					System.out.println("| 0.로그아웃                                                     |");
-					System.out.println("================================================================");
-					
+					System.out.println("관리자 메뉴입니다.");
+					System.out.println("원하시는 항목을 골라주세요");
+					System.out.println("1.숙소 관리");
+					System.out.println("2.문의 관리 페이지");
+					System.out.println("3.쿠폰 관리 페이지");
+					System.out.println("0.로그아웃");
 					answer = Integer.parseInt(br.readLine());
 
 					if(Util.checkValidNum(answer, 1,2,3,0)) {

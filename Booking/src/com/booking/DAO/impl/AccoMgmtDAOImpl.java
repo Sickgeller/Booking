@@ -193,7 +193,7 @@ public class AccoMgmtDAOImpl implements AccoMgmtDAO{
 		ResultSet rs = null;
 		try {
 			conn = DBUtil.getConnection();
-			sql = "SELECT * FROM ACCOMMODATION WHERE ACCOMMODATION_STATUS = 0";
+			sql = "SELECT * FROM ACCOMMODATION WHERE ACCOMMODATION_STATUS = 1";
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {

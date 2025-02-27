@@ -25,12 +25,13 @@ public class MainMenu {
 	private AdminService adminService = new AdminServiceImpl();
 	
 	public MainMenu(){
-		callMenu();
+		menu();
 	}
 
-	private void callMenu(){
+	private void menu(){
 		while(true) {
 			int menuNum = Integer.MAX_VALUE;
+			Util.consoleClean();
 			System.out.println("================================================================\n"
 					
 							+ "|  _    _  _____  _    _   _   _  _____  _         ___   ___   |                   \r\n"
@@ -45,7 +46,7 @@ public class MainMenu {
 			while(true) {
 				try {
 					System.out.println("================================================================");
-					System.out.println("|👉 원하시는 메뉴를 입력해주세요                                       |");
+					System.out.println("| 👉 원하시는 메뉴를 입력해주세요                                      |");
 					System.out.println("================================================================");
 					System.out.println("| 1. 로그인                                                      |");
 					System.out.println("| 2. 회원가입                                                     |");
