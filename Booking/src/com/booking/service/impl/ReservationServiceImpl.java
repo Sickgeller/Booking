@@ -68,7 +68,7 @@ public class ReservationServiceImpl implements ReservationService{
 				mem = Integer.parseInt(br.readLine());
 				List<Integer> list = reservationDAO.getDateRangeReservedNum(acco_id, sDate, eDate);
 				int limitNum = reservationDAO.getAllowedNum(acco_id);
-
+				System.out.println(Arrays.toString(list.toArray()));
 				int day = 0;
 				for(int dayRsvPeopleNum : list) {
 					int num = limitNum - mem - dayRsvPeopleNum;

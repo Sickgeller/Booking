@@ -3,9 +3,12 @@ package com.booking.DAO.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import com.booking.DAO.ReservationDAO;
@@ -18,42 +21,58 @@ public class ReservationDAOImpl implements ReservationDAO{
 	// 시작날짜 ~ 종료날짜까지 예약되어있는 인원수를 반환함 
 	@Override
 	public List<Integer> getDateRangeReservedNum(int accoId, LocalDate sDate, LocalDate eDate) {
-		List<Integer> result = new ArrayList<>();
-		String sql = "WITH DATE_RANGE AS ( " +
-				"    SELECT R.RESERVATION_START_DATE + LEVEL - 1 AS RESERVATION_DATE, " +
-				"           R.RESERVATION_NUMBER " +
-				"    FROM RESERVATION R " +
-				"    WHERE R.ACCOMMODATION_ID = ? " +
-				"    AND R.RESERVATION_START_DATE <= ? " +
-				"    AND R.RESERVATION_END_DATE >= ? " +
-				"    CONNECT BY LEVEL <= R.RESERVATION_END_DATE - R.RESERVATION_START_DATE + 1 " +
-				"    AND PRIOR R.RESERVATION_ID = R.RESERVATION_ID " +
-				"    AND PRIOR SYS_GUID() IS NOT NULL " +
-				") " +
-				"SELECT RESERVATION_DATE, SUM(RESERVATION_NUMBER) AS TOTAL_RESERVATION_NUMBER " +
-				"FROM DATE_RANGE " +
-				"WHERE RESERVATION_DATE BETWEEN ? AND ? " +
-				"GROUP BY RESERVATION_DATE " +
-				"ORDER BY RESERVATION_DATE";
+	    List<Integer> result = new ArrayList<>();
+	    String sql = "WITH DATE_RANGE AS ( " +
+	            "    SELECT R.RESERVATION_START_DATE + LEVEL - 1 AS RESERVATION_DATE, " +
+	            "           R.RESERVATION_NUMBER " +
+	            "    FROM RESERVATION R " +
+	            "    WHERE R.ACCOMMODATION_ID = ? " +
+	            "    AND R.RESERVATION_START_DATE <= ? " +
+	            "    AND R.RESERVATION_END_DATE >= ? " +
+	            "    CONNECT BY LEVEL <= R.RESERVATION_END_DATE - R.RESERVATION_START_DATE + 1 " +
+	            "    AND PRIOR R.RESERVATION_ID = R.RESERVATION_ID " +
+	            "    AND PRIOR SYS_GUID() IS NOT NULL " +
+	            ") " +
+	            "SELECT RESERVATION_DATE, SUM(RESERVATION_NUMBER) AS TOTAL_RESERVATION_NUMBER " +
+	            "FROM DATE_RANGE " +
+	            "WHERE RESERVATION_DATE BETWEEN ? AND ? " +
+	            "GROUP BY RESERVATION_DATE " +
+	            "ORDER BY RESERVATION_DATE";
 
-		try (Connection conn = DBUtil.getConnection();
-				PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	    // 날짜 범위의 시작일과 종료일 사이의 모든 날짜를 순회하기 위한 코드
+	    LocalDate startDate = sDate;
+	    LocalDate endDate = eDate;
 
-			pstmt.setInt(1, accoId);
-			pstmt.setDate(2, java.sql.Date.valueOf(eDate));
-			pstmt.setDate(3, java.sql.Date.valueOf(sDate));
-			pstmt.setDate(4, java.sql.Date.valueOf(sDate));
-			pstmt.setDate(5, java.sql.Date.valueOf(eDate));
+	    // 날짜별 예약 데이터를 저장할 맵
+	    Map<LocalDate, Integer> reservationMap = new HashMap<>();
 
-			ResultSet rs = pstmt.executeQuery();
-			while (rs.next()) {
-				result.add(rs.getInt("TOTAL_RESERVATION_NUMBER"));
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
+	    try (Connection conn = DBUtil.getConnection();
+	         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+	        pstmt.setInt(1, accoId);
+	        pstmt.setDate(2, java.sql.Date.valueOf(endDate));
+	        pstmt.setDate(3, java.sql.Date.valueOf(startDate));
+	        pstmt.setDate(4, java.sql.Date.valueOf(startDate));
+	        pstmt.setDate(5, java.sql.Date.valueOf(endDate));
+
+	        ResultSet rs = pstmt.executeQuery();
+	        while (rs.next()) {
+	            LocalDate reservationDate = rs.getDate("RESERVATION_DATE").toLocalDate();
+	            int totalReservationNumber = rs.getInt("TOTAL_RESERVATION_NUMBER");
+	            reservationMap.put(reservationDate, totalReservationNumber);
+	        }
+	    } catch (SQLException | ClassNotFoundException e) {
+	        e.printStackTrace();
+	    }
+
+	    // 날짜 범위 내에 예약 정보가 없는 날짜에는 0을 추가
+	    for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+	        result.add(reservationMap.getOrDefault(date, 0));  // 예약 정보가 없으면 0을 추가
+	    }
+
+	    return result;
 	}
+
 
 
 	@Override // 숙소 최대 허용인원
