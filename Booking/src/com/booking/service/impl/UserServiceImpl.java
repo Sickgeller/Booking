@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService{
 	public void checkUserGrade(String ID) {
 		System.out.println("등급 확인");
 		String grade = userDAO.checkUserGrade(ID);
-		if(grade != null) System.out.printf("사용자의 등급은 %s입니다" , grade);
+		if(grade != null) System.out.printf("사용자의 등급은 %s입니다\n" , grade);
 		else System.out.println("해당하는 사용자가 업습니다.");
 	}
 

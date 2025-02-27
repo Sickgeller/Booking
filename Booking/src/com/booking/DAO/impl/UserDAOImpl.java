@@ -116,7 +116,9 @@ public class UserDAOImpl implements UserDAO{
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, ID);
 			rs = pstmt.executeQuery();
-			return rs.getString(1);
+			if(rs.next()) {
+				return rs.getString(1);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -177,39 +179,39 @@ public class UserDAOImpl implements UserDAO{
 		ResultSet rs = null;
 		String sql = null;
 		List<List<String>> result = new ArrayList<>();
-		
+
 		try {
 			System.out.println(" 보유한 쿠폰 목록 조회 ");
 			conn = DBUtil.getConnection();
 			sql = "SELECT * " +
-				      "FROM CP_POSSESS cp " +
-				      "LEFT JOIN coupon c ON cp.coupon_id = c.coupon_id " + 
-				      "WHERE cp.user_id = ?";
+					"FROM CP_POSSESS cp " +
+					"LEFT JOIN coupon c ON cp.coupon_id = c.coupon_id " + 
+					"WHERE cp.user_id = ?";
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, iD);
-			
+
 			rs = pstmt.executeQuery();
-			
+
 			int index = 0;
 			if(rs.next()) {
 				result.add(new ArrayList<>());
 				do {
-				int couponId = rs.getInt("COUPON_ID");
-				String couponCode = rs.getString("COUPON_CODE");
-				Date couponIssuanceDate = rs.getDate("COUPON_ISSUANCE_DATE");
-				Date couponExpiredDate = rs.getDate("COUPON_EXPIRED_DATE");
-				int couponDiscount = rs.getInt("COUPON_DISCOUNT");
-				int couponCount = rs.getInt("COUPON_COUNT");
-				result.get(index).add(String.valueOf(couponId));
-				result.get(index).add(String.valueOf(couponCode));
-				result.get(index).add(String.valueOf(couponIssuanceDate));
-				result.get(index).add(String.valueOf(couponExpiredDate));
-				result.get(index).add(String.valueOf(couponDiscount));
-				result.get(index).add(String.valueOf(couponCount));
-				index++;
+					int couponId = rs.getInt("COUPON_ID");
+					String couponCode = rs.getString("COUPON_CODE");
+					Date couponIssuanceDate = rs.getDate("COUPON_ISSUANCE_DATE");
+					Date couponExpiredDate = rs.getDate("COUPON_EXPIRED_DATE");
+					int couponDiscount = rs.getInt("COUPON_DISCOUNT");
+					int couponCount = rs.getInt("COUPON_COUNT");
+					result.get(index).add(String.valueOf(couponId));
+					result.get(index).add(String.valueOf(couponCode));
+					result.get(index).add(String.valueOf(couponIssuanceDate));
+					result.get(index).add(String.valueOf(couponExpiredDate));
+					result.get(index).add(String.valueOf(couponDiscount));
+					result.get(index).add(String.valueOf(couponCount));
+					index++;
 				}while(rs.next());
 			}
-			
+
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
