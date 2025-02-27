@@ -3,6 +3,7 @@ package com.booking.DAO.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -50,97 +51,54 @@ public class CouponDAOImpl implements CouponDAO{
 
 
 	@Override
-	public boolean giveCouponUser(int coupon_id,String User_ID) {
-		Connection conn = null;
-		PreparedStatement select_pstmt = null;
-		PreparedStatement insert_pstmt = null;
-		PreparedStatement update_pstmt = null;
-		String insert_sql = null;
-		String update_sql = null;
-		ResultSet rs = null;
+	public boolean giveCouponUser(int coupon_id, String user_ID) {
+	    Connection conn = null;
+	    PreparedStatement select_pstmt = null;
+	    PreparedStatement insert_pstmt = null;
+	    PreparedStatement update_pstmt = null;
+	    ResultSet rs = null;
+	    int rowsUpdated = Integer.MIN_VALUE;
+	    int rowsInserted = Integer.MIN_VALUE;
+	    
 
-		try {
-			conn = DBUtil.getConnection();
+	    try {
+	        conn = DBUtil.getConnection();
+	        // 유저가 이미 쿠폰을 가지고 있는지 확인
+	        String checkExistenceSql = "SELECT COUPON_ID, USER_ID FROM CP_POSSESS WHERE COUPON_ID = ? AND USER_ID = ?";
+	        select_pstmt = conn.prepareStatement(checkExistenceSql);
+	        select_pstmt.setInt(1, coupon_id);
+	        select_pstmt.setString(2, user_ID);
+	        rs = select_pstmt.executeQuery();
 
-			String select_sql = "SELECT COUPON_ID, COUPON_CODE,COUPON_DISCOUNT FROM COUPON";
-			rs = select_pstmt.executeQuery();
-
-			List<Integer> couponList = new ArrayList<>();
-			while (rs.next()) {
-				couponList.add(rs.getInt("COUPON_ID"));
-			}
-
-			if(!isDupUserCoupon(coupon_id,User_ID)) {
-
-				insert_sql = "INSERT INTO CP_POSSESS (COUPON_ID, USER_ID,COUPON_COUNT)" +
-						"SELECT ?,U.USER_ID, 1" +
-						"FROM \"USER\" U WHERE TRUNC(U.REG_DATE) = TRUNC(SYSDATE)";
-
-
-				insert_pstmt.setInt(1, coupon_id);
-				insert_pstmt.setString(2, User_ID);
-				int update = insert_pstmt.executeUpdate();
-				if(update == 1) {
-
-					conn.commit();
-					System.out.println("새 쿠폰 지급 완료");
-				}else {
-					conn.rollback();
-					System.out.println("쿠폰을 지급하지 못했습니다.");
-				}
-
-			}else {
-				update_sql =  "UPDATE CP_POSSESS SET COUPON_COUNT = COUPON_COUNT + 1 WHERE COUPON_ID = ? AND USER_ID=?";
-				update_pstmt = conn.prepareStatement(update_sql);
-
-				update_pstmt.setInt(1, coupon_id);
-				update_pstmt.setString(1, User_ID);
-				int update= update_pstmt.executeUpdate();
-
-				if (update > 0) {
-					conn.commit();
-					System.out.println(" 기존 쿠폰 업데이트 완료 (보유 수 증가)");
-				} else {
-					conn.rollback();
-					System.out.println(" 쿠폰 업데이트 실패");
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally {
-			DBUtil.executeClose(rs, update_pstmt, conn);
-			DBUtil.executeClose(rs, insert_pstmt, conn);
-			DBUtil.executeClose(rs, select_pstmt,conn);
-		}
-		return false;
+	        if (rs.next()) {
+	            // 유저가 이미 쿠폰을 가지고 있으므로, 쿠폰 개수를 업데이트
+	            String updateSql = "UPDATE CP_POSSESS SET COUPON_COUNT = COUPON_COUNT + 1 WHERE COUPON_ID = ? AND USER_ID = ?";
+	            update_pstmt = conn.prepareStatement(updateSql);
+	            update_pstmt.setInt(1, coupon_id);
+	            update_pstmt.setString(2, user_ID);
+	            rowsUpdated = update_pstmt.executeUpdate();
+	            Util.doCommitOrRollback(conn, rowsUpdated);
+	        } else {
+	            // 유저가 쿠폰을 가지고 있지 않으므로, 새 쿠폰을 삽입
+	            String insertSql = "INSERT INTO CP_POSSESS (COUPON_ID, USER_ID, COUPON_COUNT) VALUES (?, ?, 1)";
+	            insert_pstmt = conn.prepareStatement(insertSql);
+	            insert_pstmt.setInt(1, coupon_id);
+	            insert_pstmt.setString(2, user_ID);
+	            rowsInserted = insert_pstmt.executeUpdate();
+	            Util.doCommitOrRollback(conn, rowsInserted);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        try { if (conn != null)conn.rollback();} catch (SQLException se) {}
+	    } finally {
+	        // 3단계: 리소스 정리
+	        DBUtil.executeClose(rs, select_pstmt, conn);
+	        DBUtil.executeClose(null, insert_pstmt, conn);
+	        DBUtil.executeClose(null, update_pstmt, conn);
+	    }
+	    return true; // 쿠폰 삽입 또는 업데이트가 성공적으로 완료됨
 	}
 
-	private boolean isDupUserCoupon(int coupon_ID, String user_ID) {
-
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql = "SELECT COUNT(*) FROM COUPON WHERE COUPON_ID = ?";
-		try {
-			conn = DBUtil.getConnection();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, coupon_ID);
-			pstmt.setString(2,user_ID);
-			rs = pstmt.executeQuery();
-
-			if (rs.next() && rs.getInt(1) > 0) {
-				return true;  // 중복된 쿠폰 코드가 있음
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			DBUtil.executeClose(rs, pstmt, conn);
-		}
-
-		return false;  // 중복된 쿠폰 코드 없음
-	}
 
 
 	@Override
