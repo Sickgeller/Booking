@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +13,7 @@ import com.booking.DAO.impl.AccommodationDAOImpl;
 import com.booking.dto.Accommodation;
 import com.booking.dto.Admin;
 import com.booking.dto.User;
+import com.booking.menu.ReviewMenu;
 import com.booking.service.AccommodationService;
 
 public class AccommodationServiceImpl implements AccommodationService{
@@ -255,4 +257,29 @@ public class AccommodationServiceImpl implements AccommodationService{
 		return result;
 	}
 
+	@Override
+	public void domestic() { // 더좋은로직있을거같은데 걍 일단 구현함
+		Map<List<Integer>, Integer> map = showDomesticInfo();
+		Iterator<List<Integer>> ir = map.keySet().iterator();
+		if (ir.hasNext()) {
+			System.out.println("숙소");
+		    List<Integer> idList = ir.next();
+		    Integer tmp = map.get(idList);
+		    new ReviewMenu(br, idList, tmp);
+		} else {
+		    System.out.println("숙소 데이터가 없습니다.");
+		}
+	}
+	public void oversea() {
+		Map<List<Integer>, Integer> map = showOverseasInfo();
+		Iterator<List<Integer>> ir = map.keySet().iterator();
+		if (ir.hasNext()) {
+		    List<Integer> idList = ir.next();
+		    Integer tmp = map.get(idList);
+		    new ReviewMenu(br, idList, tmp);
+		} else {
+		    System.out.println("숙소 데이터가 없습니다.");
+		}
+	}
+	
 }
