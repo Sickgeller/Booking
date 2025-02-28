@@ -65,25 +65,25 @@ public class AccoMgmtServiceImpl implements AccoMgmtService{
 
 	@Override
 	public void accommodation_resume() {
-		List<Accommodation> normalAccoList = accoMgmtDAO.getNormalAcco();
-		if(normalAccoList.isEmpty()) {
-			System.out.println("영업중인 숙소가 없습니다.");
+		List<Accommodation> susAccoList = accoMgmtDAO.getSusAcco();
+		if(susAccoList.isEmpty()) {
+			System.out.println("영업정지중인 숙소가 없습니다.");
 			return;
 		}
-		for(Accommodation acco : normalAccoList) {
+		for(Accommodation acco : susAccoList) {
 			System.out.printf("숙소번호 : %d , 숙소이름 : %s , 영업상태 : %s\n" , acco.getAccommodatin_id(), acco.getAccommodation_name(), acco.getAccommodation_status() == 1 ?" 영업중 " : "영업정지중");
 		}
 		
 		int acco_num = Integer.MIN_VALUE;
 		while(true) {
-			System.out.println("영업정지를 원하는 숙소번호를 입력해주세요");
+			System.out.println("영업재개를 원하는 숙소번호를 입력해주세요");
 			try {
 				acco_num = Integer.parseInt(br.readLine());
 			} catch (NumberFormatException | IOException e) {
 				System.out.println("숫자만 입력해주세요");
 				continue;
 			}
-			if(validAccoNum(acco_num, normalAccoList)) {
+			if(validAccoNum(acco_num, susAccoList)) {
 				break;
 			}else {
 				System.out.println("유효하지않은 숙소번호입니다.");

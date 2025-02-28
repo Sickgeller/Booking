@@ -62,7 +62,6 @@ public class ReservationServiceImpl implements ReservationService{
 				mem = Integer.parseInt(br.readLine());
 				List<Integer> list = reservationDAO.getDateRangeReservedNum(acco_id, sDate, eDate);
 				int limitNum = reservationDAO.getAllowedNum(acco_id);
-				System.out.println(Arrays.toString(list.toArray()));
 				int day = 0;
 				for(int dayRsvPeopleNum : list) {
 					int num = limitNum - mem - dayRsvPeopleNum;
@@ -210,7 +209,6 @@ public class ReservationServiceImpl implements ReservationService{
 		Accommodation suggestAcco = reservationDAO.suggestAcco(location_name, rcmd_season);
 		System.out.println("추천 결과입니다.");
 		System.out.printf("번호 : %d번 , 숙소이름 : %s , 숙소주소 : %s\n" , suggestAcco.getAccommodatin_id(),suggestAcco.getAccommodation_name(),suggestAcco.getAccommodation_address());
-		System.out.println(suggestAcco.getAccommodation_address());
 		System.out.println("가격 : " + suggestAcco.getAccommodation_price());
 	}
 

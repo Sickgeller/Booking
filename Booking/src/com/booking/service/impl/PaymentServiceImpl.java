@@ -32,6 +32,9 @@ public class PaymentServiceImpl implements PaymentService{
 	public List<Integer> selectPaymentTarget() {
 		List<Integer> result = new ArrayList<>();
 		Reservation selectedReservation = selectUnpaidReservation();
+		if(selectedReservation == null) {
+			return null;
+		}
 		result.add(selectedReservation.getReservation_id());
 		result.add(user.getCash());
 		result.add(selectedReservation.getReservation_price());
@@ -40,6 +43,10 @@ public class PaymentServiceImpl implements PaymentService{
 	private Reservation selectUnpaidReservation() {
 		List<Reservation> unpaidReserv = paymentDAO.getUnpaidReservation(user.getID());
 		List<Integer> idList = new ArrayList<>();
+		if(unpaidReserv.isEmpty()) {
+			System.out.println("예약된 정보가 없습니다.");
+			return null;
+		}
 		for(Reservation reserv : unpaidReserv) {
 			idList.add(reserv.getReservation_id());
 			System.out.println("============================================================");
@@ -75,7 +82,10 @@ public class PaymentServiceImpl implements PaymentService{
 	}
 	@Override
 	public boolean processPayment() {
-		List<Integer> list = selectPaymentTarget(); 
+		List<Integer> list = selectPaymentTarget();
+		if(list == null) {
+			return false;
+		}
 		int reservationId = list.get(0);
 		int userCash = list.get(1);
 		int reservationPrice = list.get(2);
@@ -83,7 +93,6 @@ public class PaymentServiceImpl implements PaymentService{
 			System.out.println("결제 진행합니다.");
 			paymentDAO.updateCashPayment(userCash-reservationPrice);
 			System.out.println("============================================================");
-			
 			System.out.println("👤 사용자 ID : " + user.getID());
 			System.out.println("💰 보유 금액 : " + user.getCash());
 			System.out.println("============================================================");
@@ -104,6 +113,9 @@ public class PaymentServiceImpl implements PaymentService{
 	@Override
 	public boolean paymentWithPoint() {
 		List<Integer> list = selectPaymentTarget(); 
+		if(list == null ) {
+			return false;
+		}
 		int reservationId = list.get(0);
 		int userCash = list.get(1);
 		int reservationPrice = list.get(2);

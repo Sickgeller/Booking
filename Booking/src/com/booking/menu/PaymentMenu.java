@@ -20,7 +20,7 @@ public class PaymentMenu {
 	private PaymentService paymentService;
 	private ReservationService reservationService;
 	private UserService userService = new UserServiceImpl(br);
-	
+
 	public PaymentMenu(BufferedReader br, User user) {
 		super();
 		this.br = br;
@@ -64,13 +64,14 @@ public class PaymentMenu {
 	}
 
 	private void doPayMenu() {
-		
+
 		//1번 고른 예약번호 2번보유현금 3번숙소가격
 		int paymentMethod = Integer.MIN_VALUE;
 		while(true) {
 			System.out.println("결제 방법을 선택");
 			System.out.println("1. 현금");
 			System.out.println("2. 현금 + 포인트");
+			System.out.println("뒤로 가기");
 			try {
 				paymentMethod  = Integer.parseInt(br.readLine());
 			} catch (NumberFormatException | IOException e) {
@@ -81,30 +82,38 @@ public class PaymentMenu {
 				break;
 			}
 		}
-		
-		boolean paymentResult = 
-				paymentMethod == 1 ? paymentService.processPayment() 
-				: paymentService.paymentWithPoint();
-		if(!paymentResult) {
-			int answerCharge = Integer.MIN_VALUE;
-			while(true) {
-				System.out.println("부족한 금액 충전하시겠습니까? (1.예 / 2.아니오");
-				try {
-					Integer.parseInt(br.readLine());
-				} catch (NumberFormatException | IOException e) {
-					System.out.println("숫자만 입력해주세요");
-				}
-				if(Util.checkValidNum(answerCharge, 1,2)) {
-					break;
-				}
+
+		if(paymentMethod == 1) {
+			paymentService.processPayment();
+		}else if(paymentMethod == 2) {
+			paymentService.paymentWithPoint();
+		}else if(paymentMethod == 3) {
+			callDoCharge();
+		}else if(paymentMethod == 0) {
+			return;
+		}
+
+	}
+
+	private void callDoCharge() {
+		int answerCharge = Integer.MIN_VALUE;
+		while(true) {
+			System.out.println("충전하시겠습니까? (1.예 / 2.아니오");
+			try {
+				Integer.parseInt(br.readLine());
+			} catch (NumberFormatException | IOException e) {
+				System.out.println("숫자만 입력해주세요");
 			}
-			if(answerCharge == 1) {
-				chargeMoney(answerCharge);
-			}else {
-				System.out.println("결제가 취소되었습니다.");
+			if(Util.checkValidNum(answerCharge, 1,2)) {
+				break;
 			}
 		}
-		
+		if(answerCharge == 1) {
+			chargeMoney(answerCharge);
+		}else {
+			System.out.println("결제가 취소되었습니다.");
+			return;
+		}
 	}
 
 	private void chargeMoney(int answerCharge) {
